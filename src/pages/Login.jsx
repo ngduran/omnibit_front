@@ -22,12 +22,15 @@ export default function Login({ onLogin }) {
         
         {/* Banner Superior com a Identidade da Marca */}
         <div className="bg-pastoral-primary p-8 text-center text-pastoral-bg-soft flex flex-col items-center gap-2">
-          <div className="w-12 h-12 bg-pastoral-accent rounded-2xl flex items-center justify-center text-pastoral-primary shadow-md">
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-            </svg>
-          </div>
-          <h1 className="text-2xl font-black tracking-wider uppercase mt-2">OmniBit</h1>
+          
+          {/* 👇 Sua nova logo aplicada de forma limpa e transparente */}
+          <img 
+            src="/pastoral-logo.webp" 
+            alt="OmniBit Logo" 
+            className="w-16 h-16 object-contain drop-shadow-md mb-1"
+          />
+
+          <h1 className="text-2xl font-black tracking-wider uppercase mt-1">OmniBit</h1>
           <p className="text-xs text-slate-300">Painel de Controle e Gestão ERP</p>
         </div>
 
