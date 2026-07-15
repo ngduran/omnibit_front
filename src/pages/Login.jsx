@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 export default function Login({ onLogin }) {
-  const [usuario, setUsuario] = useState('admin@omnibit.com');
-  const [senha, setSenha] = useState('123456');
+  const [usuario, setUsuario] = useState('');
+  const [senha, setSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
 
   const handleSubmit = (e) => {
@@ -17,9 +17,13 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <div className="min-h-screen bg-pastoral-bg-soft flex items-center justify-center p-4 font-sans antialiased">
-      <div className="max-w-md w-full bg-pastoral-card-bg rounded-3xl shadow-xl border border-pastoral-border overflow-hidden transition-all">
+    // <div className="min-h-screen bg-pastoral-bg-soft flex items-center justify-center p-4 font-sans antialiased">
+    <div className="min-h-screen bg-[linear-gradient(135deg,#667eea_0%,#764ba2_100%)] flex items-center justify-center p-4 font-sans antialiased">
+      <div className="max-w-md w-full bg-pastoral-card-bg rounded-3xl shadow-xl border border-pastoral-border border-t-0 border-l-0 border-r-0 overflow-hidden transition-all">
         
+        
+        
+
         {/* Banner Superior com a Identidade da Marca */}
         <div className="bg-pastoral-primary p-8 text-center text-pastoral-bg-soft flex flex-col items-center gap-2">
           
@@ -31,7 +35,7 @@ export default function Login({ onLogin }) {
           />
 
           <h1 className="text-2xl font-black tracking-wider uppercase mt-1">OmniBit</h1>
-          <p className="text-xs text-slate-300">Painel de Controle e Gestão ERP</p>
+          {/* <p className="text-xs text-slate-300">Painel de Controle e Gestão ERP</p> */}
         </div>
 
         {/* Formulário de Login */}
@@ -78,7 +82,7 @@ export default function Login({ onLogin }) {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-pastoral-bg-soft border border-pastoral-border rounded-xl text-pastoral-text-dark focus:outline-none focus:border-pastoral-primary-light focus:ring-2 focus:ring-pastoral-primary-light/20 transition-all text-sm font-medium"
-                placeholder="••••••••"
+                placeholder="Digite a sua senha"
               />
             </div>
           </div>
@@ -91,7 +95,7 @@ export default function Login({ onLogin }) {
               className="w-4 h-4 rounded border-pastoral-border text-pastoral-primary focus:ring-pastoral-primary-light accent-pastoral-primary"
             />
             <label htmlFor="lembrar" className="ml-2 text-xs font-medium text-slate-600 select-none cursor-pointer">
-              Manter conectado neste dispositivo
+              Mostrar Senha
             </label>
           </div>
 
@@ -105,18 +109,46 @@ export default function Login({ onLogin }) {
               <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div>
             ) : (
               <>
-                <span>Autenticar no Sistema</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                </svg>
+                <span>Entrar</span>
+                {/* <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> */}
+                  {/* <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path> */}
+                {/* </svg> */}
               </>
             )}
           </button>
+
+          {/* Divisória sutil ou espaçamento para separar as ações */}
+          <div className="relative flex py-2 items-center">
+            <div className="flex-grow border-t border-pastoral-border/60"></div>
+            <span className="flex-shrink mx-4 text-xs text-slate-400 font-medium">ou</span>
+            <div className="flex-grow border-t border-pastoral-border/60"></div>
+          </div>
+
+          {/* Novo Bloco: Criar Conta e Reenviar E-mail */}
+          <div className="space-y-4 text-center">
+            <button
+              type="button"
+              onClick={() => alert('Ir para tela de cadastro')} // Substitua pela sua lógica de navegação
+              className="w-full bg-transparent text-pastoral-primary border-2 border-pastoral-primary py-3 rounded-xl font-bold hover:bg-pastoral-primary hover:text-pastoral-bg-soft active:scale-[0.99] transition-all flex items-center justify-center cursor-pointer"
+            >
+              Criar Conta
+            </button>
+
+            <a 
+              href="#reenviar-email" 
+              className="inline-block text-xs text-pastoral-primary-light font-semibold hover:underline"
+            >
+              Reenviar email de confirmação
+            </a>
+          </div>
+
+
+
         </form>
 
         {/* Rodapé de Informação */}
         <div className="px-8 py-4 bg-pastoral-bg-soft/60 border-t border-pastoral-border text-center">
-          <p className="text-[11px] text-slate-400 font-medium">🛡️ Conexão segura e criptografada localmente.</p>
+          <p className="text-[11px] text-slate-400 font-medium">🛡️ Conexão segura</p>
         </div>
 
       </div>
