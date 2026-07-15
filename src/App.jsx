@@ -5,6 +5,9 @@ import PrivateRoute from './components/PrivateRoute';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Login from './pages/Login';
 import Cargos from './pages/Cargos';
+import { UIProvider } from './context/UIContext'; // Importe o novo provider
+import { Toaster } from 'sonner';
+import AppToaster from './components/layout/AppToaster';
 
 // Páginas de rascunho temporárias
 const Dashboard = () => <div className="p-8 text-pastoral-text-dark font-bold"><h1>Tela de Dashboard</h1></div>;
@@ -25,20 +28,23 @@ const ProtectedRoute = ({ children }) => {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Rota Pública */}
-          <Route path="/login" element={<Login />} />
+      <UIProvider> {/* Envolvendo a aplicação */}
+        <AppToaster />
+        <BrowserRouter>
+          <Routes>
+            {/* Rota Pública */}
+            <Route path="/login" element={<Login />} />
 
-          {/* Rotas Protegidas (Todas no mesmo nível, sem confusão de caminhos) */}
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/cargos" element={<ProtectedRoute><Cargos /></ProtectedRoute>} />
-          <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
-          
-          {/* Redirecionamento Padrão */}
-          <Route path="/" element={<Navigate to="/cargos" replace />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Rotas Protegidas (Todas no mesmo nível, sem confusão de caminhos) */}
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/cargos" element={<ProtectedRoute><Cargos /></ProtectedRoute>} />
+            <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
+            
+            {/* Redirecionamento Padrão */}
+            <Route path="/" element={<Navigate to="/cargos" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </UIProvider>
     </AuthProvider>
   );
 }

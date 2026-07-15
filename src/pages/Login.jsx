@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext'; // Integrando a lógica de autenticação
-import Input from '../components/ui/Input';       // Usando seu componente Input[cite: 5]
-import Button from '../components/ui/Button';     // Usando seu componente Button[cite: 4]
+import { useAuth } from '../context/AuthContext';
+import Input from '../components/ui/Input';
+import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { notify } from '../utils/notify'; // Seu novo mensageiro moderno
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
   const [carregando, setCarregando] = useState(false);
   
-  const { login } = useAuth(); // Função de autenticação do contexto
+  const { login } = useAuth(); 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setCarregando(true);
 
-    setTimeout(() => {
-      setCarregando(false);
-      login(); // Libera o acesso via PrivateRoute
+    // Chama a função login do AuthContext
+    const resultado = await login({ email: usuario, senha });
+    
+    setCarregando(false);
+
+    if (resultado.success) {
+      notify.sucesso('Bem-vindo de volta!');
       navigate('/cargos');
-    }, 600);
+    } else {
+      // Exibe a mensagem de erro amigável caso algo falhe
+      notify.erro(resultado.message || 'Não foi possível conectar ao servidor.');
+    }
   };
 
   return (
@@ -40,7 +48,6 @@ export default function Login() {
         {/* Formulário de Login */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           
-          {/* Input de Usuário usando seu componente[cite: 5] */}
           <Input 
             label="Usuário ou E-mail"
             type="text"
@@ -55,7 +62,6 @@ export default function Login() {
             }
           />
 
-          {/* Input de Senha preservando seu layout de label/link[cite: 5] */}
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
@@ -86,7 +92,6 @@ export default function Login() {
             </label>
           </div>
 
-          {/* Botão de Entrar usando seu componente[cite: 4] */}
           <Button
             type="submit"
             disabled={carregando}
@@ -103,12 +108,11 @@ export default function Login() {
             <div className="flex-grow border-t border-pastoral-border/60"></div>
           </div>
 
-          {/* Botão de Criar Conta usando seu componente[cite: 4] */}
           <div className="space-y-4 text-center">
             <Button
               type="button"
               variant="ghost"
-              onClick={() => alert('Ir para tela de cadastro')}
+              onClick={() => notify.aviso('Funcionalidade de cadastro em breve!')}
               className="w-full border-2 border-pastoral-primary text-pastoral-primary hover:bg-pastoral-primary hover:text-pastoral-bg-soft !py-3"
             >
               Criar Conta

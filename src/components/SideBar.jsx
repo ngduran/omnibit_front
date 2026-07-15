@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // 1. Importamos os hooks de navegação
+import { useUI } from '../context/UIContext';
 
 // ============================================================================
 // 1️⃣ SUB-COMPONENTE: LOGOTIPO E BOTÃO FECHAR (MOBILE)
@@ -161,7 +162,8 @@ function UserProfileFooter({ onLogout }) {
   );
 }
 
-export default function Sidebar({ isMobileMenuOpen, setIsMobileMenuOpen, onLogout }) {
+export default function Sidebar({ onLogout }) {
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useUI(); // Acesso direto
   return (
     <>
       <aside 
