@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input'; // 👇 Importamos o Input
 
 export default function Cargos() {
-  // 🎯 Estado que controla se o Modal está aberto ou fechado
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Dados fictícios para povoar nossa tabela por enquanto
   const listaCargos = [
     { id: 1, nome: 'ADMIN', descricao: 'Acesso total a todas as configurações, relatórios e gerenciamento de usuários.', usuarios: 3, status: 'Ativo' },
     { id: 2, nome: 'PROFESSOR', descricao: 'Permissão para gerenciar turmas, lançar notas, conteúdos e avaliar atividades.', usuarios: 14, status: 'Ativo' },
     { id: 3, nome: 'USUARIO', descricao: 'Acesso básico ao painel, consulta de dados públicos e edição do próprio perfil.', usuarios: 128, status: 'Ativo' },
   ];
 
-  // Lista fictícia de permissões que o Auctoritas controla
   const permissoesDisponiveis = [
     { id: 'auc_admin', label: 'Auctoritas: Acesso Total (Admin)' },
     { id: 'past_ler', label: 'Pastoral: Visualizar Dados' },
@@ -31,16 +30,12 @@ export default function Cargos() {
           <p className="text-sm text-slate-500">Defina os papéis, níveis de acesso e hierarquias do sistema OmniBit.</p>
         </div>
         
-        {/* 👇 Botão agora altera o estado para abrir o Modal */}
-        <button 
+        <Button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-pastoral-primary text-pastoral-bg-soft px-5 py-2.5 rounded-xl font-bold shadow-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>}
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-          </svg>
           Novo Cargo
-        </button>
+        </Button>
       </div>
 
       {/* Tabela de Dados Contida no Card */}
@@ -78,16 +73,12 @@ export default function Cargos() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-xs font-medium">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="p-2 text-slate-500 hover:text-pastoral-primary hover:bg-pastoral-bg-soft rounded-lg transition-all cursor-pointer" title="Editar">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                      </button>
-                      <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer" title="Excluir">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                      </button>
+                      <Button variant="ghost" className="!p-2" title="Editar">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                      </Button>
+                      <Button variant="ghost" className="!p-2 hover:text-red-600 hover:bg-red-50" title="Excluir">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -97,44 +88,35 @@ export default function Cargos() {
         </div>
       </div>
 
-      {/* =========================================================
-          🛑 MODAL DE NOVO CARGO (Sobreposição Dinâmica)
-          ========================================================= */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-          {/* Fundo Escuro com clique para fechar */}
           <div 
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
             onClick={() => setIsModalOpen(false)}
           ></div>
           
-          {/* Corpo do Modal */}
           <div className="relative bg-pastoral-card-bg w-full max-w-2xl rounded-3xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden">
             
-            {/* Header do Modal */}
             <div className="px-6 py-5 border-b border-pastoral-border bg-pastoral-bg-soft/50 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-black text-pastoral-primary">Criar Novo Cargo</h2>
                 <p className="text-xs text-slate-500 mt-1">Configure os acessos deste papel no sistema Auctoritas.</p>
               </div>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
-              >
+              <Button variant="ghost" className="!p-2 hover:text-red-500 hover:bg-red-50" onClick={() => setIsModalOpen(false)}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
+              </Button>
             </div>
 
-            {/* Miolo do Formulário (Com scroll se a tela for pequena) */}
             <div className="p-6 overflow-y-auto space-y-5 flex-1">
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Nome do Cargo</label>
-                  <input 
+                {/* 👇 Campo refatorado usando nosso componente <Input> */}
+                <div className="sm:col-span-2">
+                  <Input 
+                    label="Nome do Cargo"
                     type="text" 
                     placeholder="Ex: COORDENADOR_GERAL"
-                    className="w-full px-4 py-2.5 bg-pastoral-bg-soft border border-pastoral-border rounded-xl text-pastoral-text-dark focus:outline-none focus:border-pastoral-primary-light focus:ring-2 focus:ring-pastoral-primary-light/20 transition-all text-sm font-medium uppercase"
+                    style={{ textTransform: 'uppercase' }}
                   />
                 </div>
                 
@@ -148,7 +130,7 @@ export default function Cargos() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Descrição (Para que serve este cargo?)</label>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">Descrição</label>
                 <textarea 
                   rows="2"
                   placeholder="Descreva brevemente as responsabilidades deste papel..."
@@ -177,20 +159,13 @@ export default function Cargos() {
               
             </div>
 
-            {/* Footer do Modal com Botões de Ação */}
             <div className="px-6 py-4 border-t border-pastoral-border bg-pastoral-bg-soft flex items-center justify-end gap-3">
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2.5 text-sm font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-xl transition-all cursor-pointer"
-              >
+              <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
                 Cancelar
-              </button>
-              <button 
-                onClick={() => setIsModalOpen(false)} // Por enquanto só fecha, no futuro salvará no backend
-                className="px-6 py-2.5 bg-pastoral-primary text-pastoral-bg-soft text-sm font-bold rounded-xl shadow-md hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer"
-              >
+              </Button>
+              <Button onClick={() => setIsModalOpen(false)}>
                 Salvar Novo Cargo
-              </button>
+              </Button>
             </div>
 
           </div>
