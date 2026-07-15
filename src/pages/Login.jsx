@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { notify } from '../utils/notify'; // Seu novo mensageiro moderno
+import { notify } from '../utils/notify'; 
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
@@ -17,17 +17,14 @@ export default function Login() {
     e.preventDefault();
     setCarregando(true);
 
-    // Chama a função login do AuthContext
+    // Chama o login; as notificações de sucesso/erro ocorrem dentro do Contexto
     const resultado = await login({ email: usuario, senha });
     
     setCarregando(false);
 
+    // Se o login for bem-sucedido, apenas navegamos para a próxima tela
     if (resultado.success) {
-      notify.sucesso('Bem-vindo de volta!');
       navigate('/cargos');
-    } else {
-      // Exibe a mensagem de erro amigável caso algo falhe
-      notify.erro(resultado.message || 'Não foi possível conectar ao servidor.');
     }
   };
 
@@ -126,6 +123,38 @@ export default function Login() {
 
         <div className="px-8 py-4 bg-pastoral-bg-soft/60 border-t border-pastoral-border text-center">
           <p className="text-[11px] text-slate-400 font-medium">🛡️ Conexão segura</p>
+        </div>
+        
+        {/* Seção de Debug/Configuração */}
+        <div className="mt-8 pt-6 border-t border-slate-200">
+          <details className="text-slate-500 text-xs">
+            <summary className="cursor-pointer font-bold uppercase tracking-wider text-center">
+              Configurações de Rede (Desenvolvimento)
+            </summary>
+            <div className="space-y-3 mt-4 bg-slate-50 p-4 rounded-lg">
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[10px]">Servidor de dados</label>
+                <input 
+                  className="border rounded p-1 text-sm"
+                  defaultValue={localStorage.getItem('NGROK_ID_NXD') || ''}
+                  placeholder="ex: abcd-1234"
+                  onChange={(e) => localStorage.setItem('NGROK_ID_NXD', e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="font-semibold text-[10px]">Servidor de Autenticação</label>
+                <input 
+                  className="border rounded p-1 text-sm"
+                  defaultValue={localStorage.getItem('NGROK_ID_AUCT') || ''}
+                  placeholder="ex: xyzw-5678"
+                  onChange={(e) => localStorage.setItem('NGROK_ID_AUCT', e.target.value)}
+                />
+              </div>
+              <p className="text-[10px] text-slate-400 mt-2 italic text-center">
+                *Recarregue a página após alterar as chaves.
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </div>

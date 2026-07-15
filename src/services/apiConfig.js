@@ -1,4 +1,3 @@
-// src/services/apiConfig.js
 
 // Recupera as chaves do localStorage, caso existam, para uso com Ngrok
 const ID_NXD = localStorage.getItem('NGROK_ID_NXD') || '';

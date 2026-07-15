@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { ENV } from './apiConfig';
 
+console.log("DEBUG: A URL que o Axios está usando é:", ENV.AUCTORITAS_API); // ADICIONE ISSO
+
 // Instância para o seu Back-end principal (NXD)
 export const apiNxd = axios.create({
   baseURL: ENV.NXD_API,

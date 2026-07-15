@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
-import { apiNxd } from '../services/api'; // Importando a instância configurada
+import { toast } from 'sonner'; 
+import { apiAuctoritas } from '../services/api'; 
 
 const AuthContext = createContext(null);
 
@@ -7,28 +8,34 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // A função login agora recebe as credenciais e é assíncrona (async)
   const login = async (credentials) => {
     setLoading(true);
     try {
-      // Faz a chamada real para o endpoint. 
-      // Certifique-se que '/auth/login' é o caminho correto no seu back-end!
-      const response = await apiNxd.post('/auth/login', credentials);
+      const response = await apiAuctoritas.post('/auth/login', credentials);
       
-      // Se deu certo (status 200-299), o código continua aqui
-      // Supondo que seu back-end retorne um token ou dados do usuário
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
       }
       
       setIsAuthenticated(true);
+      
+      // Feedback de sucesso centralizado no Contexto[cite: 1]
+      toast.success('Bem-vindo de volta!');
+      
       return { success: true };
+
     } catch (error) {
-      // Caso ocorra erro (senha errada, servidor offline), capturamos aqui
-      console.error("Erro na tentativa de login:", error);
+      const mensagemErro = error.response?.data?.message || 'Erro ao conectar com o servidor';
+      
+      // Feedback de erro centralizado no Contexto[cite: 1]
+      toast.error('Falha no Login', {
+        description: mensagemErro,
+        duration: 4000,
+      });
+
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Erro ao conectar com o servidor' 
+        message: mensagemErro 
       };
     } finally {
       setLoading(false);
