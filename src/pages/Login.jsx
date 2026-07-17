@@ -17,12 +17,10 @@ export default function Login() {
     e.preventDefault();
     setCarregando(true);
 
-    // Chama o login; as notificações de sucesso/erro ocorrem dentro do Contexto
     const resultado = await login({ email: usuario, senha });
     
     setCarregando(false);
 
-    // Se o login for bem-sucedido, apenas navegamos para a próxima tela
     if (resultado.success) {
       navigate('/cargos');
     }
@@ -30,10 +28,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(135deg,#667eea_0%,#764ba2_100%)] flex items-center justify-center p-4 font-sans antialiased">
-      <div className="max-w-md w-full bg-pastoral-card-bg rounded-3xl shadow-xl border border-pastoral-border border-t-0 border-l-0 border-r-0 overflow-hidden transition-all">
+      <div className="max-w-md w-full bg-pastoral-card-bg rounded-3xl shadow-xl border border-pastoral-border border-t-0 border-l-0 border-r-0 overflow-hidden transition-all select-none">
         
-        {/* Banner Superior */}
-        <div className="bg-pastoral-primary p-8 text-center text-pastoral-bg-soft flex flex-col items-center gap-2">
+        {/* Container do Logo e Título */}
+        <div className="bg-pastoral-primary p-8 text-center text-pastoral-bg-soft flex flex-col items-center gap-2 select-none">
           <img 
             src="/pastoral-logo.webp" 
             alt="OmniBit Logo" 
@@ -42,9 +40,7 @@ export default function Login() {
           <h1 className="text-2xl font-black tracking-wider uppercase mt-1">OmniBit</h1>
         </div>
 
-        {/* Formulário de Login */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          
           <Input 
             label="Usuário ou E-mail"
             type="text"
@@ -60,7 +56,7 @@ export default function Login() {
           />
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between select-none">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
                 Senha de Acesso
               </label>
@@ -82,50 +78,43 @@ export default function Login() {
             />
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center select-none">
             <input id="lembrar" type="checkbox" className="w-4 h-4 rounded border-pastoral-border text-pastoral-primary focus:ring-pastoral-primary-light accent-pastoral-primary" />
-            <label htmlFor="lembrar" className="ml-2 text-xs font-medium text-slate-600 select-none cursor-pointer">
+            <label htmlFor="lembrar" className="ml-2 text-xs font-medium text-slate-600 cursor-pointer">
               Mostrar Senha
             </label>
           </div>
 
-          <Button
-            type="submit"
-            disabled={carregando}
-            className="w-full !py-3.5"
-          >
-            {carregando ? (
-              <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div>
-            ) : "Entrar"}
+          <Button type="submit" disabled={carregando} className="w-full !py-3.5">
+            {carregando ? <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div> : "Entrar"}
           </Button>
 
-          <div className="relative flex py-2 items-center">
+          <div className="relative flex py-2 items-center select-none">
             <div className="flex-grow border-t border-pastoral-border/60"></div>
             <span className="flex-shrink mx-4 text-xs text-slate-400 font-medium">ou</span>
             <div className="flex-grow border-t border-pastoral-border/60"></div>
           </div>
 
           <div className="space-y-4 text-center">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => notify.aviso('Funcionalidade de cadastro em breve!')}
-              className="w-full border-2 border-pastoral-primary text-pastoral-primary hover:bg-pastoral-primary hover:text-pastoral-bg-soft !py-3"
+          <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={() => navigate('/cadastro-conta')} 
+              className="w-full border-2 border-pastoral-primary text-pastoral-primary hover:bg-pastoral-primary hover:!text-white !py-3"
             >
               Criar Conta
             </Button>
-
             <a href="#reenviar-email" className="inline-block text-xs text-pastoral-primary-light font-semibold hover:underline">
               Reenviar email de confirmação
             </a>
           </div>
         </form>
 
-        <div className="px-8 py-4 bg-pastoral-bg-soft/60 border-t border-pastoral-border text-center">
+        <div className="px-8 py-4 bg-pastoral-bg-soft/60 border-t border-pastoral-border text-center select-none">
           <p className="text-[11px] text-slate-400 font-medium">🛡️ Conexão segura</p>
         </div>
         
-        {/* Seção de Debug/Configuração */}
+               {/* Seção de Debug/Configuração */}
         <div className="mt-8 pt-6 border-t border-slate-200">
           <details className="text-slate-500 text-xs">
             <summary className="cursor-pointer font-bold uppercase tracking-wider text-center">
@@ -156,6 +145,11 @@ export default function Login() {
             </div>
           </details>
         </div>
+        
+
+
+
+
       </div>
     </div>
   );

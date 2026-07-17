@@ -8,6 +8,7 @@ import Cargos from './pages/Cargos';
 import { UIProvider } from './context/UIContext'; // Importe o novo provider
 import { Toaster } from 'sonner';
 import AppToaster from './components/layout/AppToaster';
+import CadastroConta from './pages/CadastroConta';
 
 // Páginas de rascunho temporárias
 const Dashboard = () => <div className="p-8 text-pastoral-text-dark font-bold"><h1>Tela de Dashboard</h1></div>;
@@ -34,6 +35,7 @@ export default function App() {
           <Routes>
             {/* Rota Pública */}
             <Route path="/login" element={<Login />} />
+            <Route path="/cadastro-conta" element={<CadastroConta />} />
 
             {/* Rotas Protegidas (Todas no mesmo nível, sem confusão de caminhos) */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
