@@ -6,11 +6,15 @@ import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { passwordSchema, emailSchema } from '../utils/validations'; // Importação centralizada
+
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
 const loginSchema = z.object({
-  usuario: emailSchema,
-  senha: passwordSchema,
+  usuario: z.string().email("Por favor, insira um e-mail válido"),
+  // Aplicamos o regex aqui
+  senha: z.string()
+    .min(1, "A senha é obrigatória")
+    .regex(passwordRegex, "Senha deve ter 8+ caracteres, maiúsculas, minúsculas, números e símbolos."),
 });
 
 export default function Login() {
@@ -89,6 +93,7 @@ export default function Login() {
             {carregando ? <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div> : "Entrar"}
           </Button>
 
+          {/* ... (restante do seu código permanece igual) */}
           <div className="relative flex py-2 items-center select-none">
             <div className="flex-grow border-t border-pastoral-border/60"></div>
             <span className="flex-shrink mx-4 text-xs text-slate-400 font-medium">ou</span>
