@@ -1,37 +1,26 @@
-import React from 'react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-export default function Input({ 
-  label, 
-  icon, 
-  className = '', 
-  ...props 
-}) {
+const cn = (...inputs) => twMerge(clsx(inputs));
+
+export default function Input({ label, icon, className, ...props }) {
+  const styles = {
+    container: "space-y-1.5",
+    label: "text-xs font-bold uppercase tracking-wider text-slate-500 block",
+    wrapper: "relative",
+    iconWrapper: "absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400",
+    // Aqui incluímos o foco com a cor accent e o shadow conforme seu estilo antigo
+    input: "w-full py-2.5 bg-pastoral-bg-soft border border-pastoral-border rounded-xl text-pastoral-text-dark focus:outline-none focus:border-pastoral-accent focus:ring-2 focus:ring-pastoral-accent/20 transition-all text-sm font-medium",
+    padding: icon ? "pl-11 pr-4" : "px-4"
+  };
+
   return (
-    <div className={`space-y-1.5 ${className}`}>
-      {/* Se passarmos a propriedade "label", ele renderiza o texto em cima */}
-      {label && (
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
-          {label}
-        </label>
-      )}
+    <div className={cn(styles.container, className)}>
+      {label && <label className={styles.label}>{label}</label>}
       
-      <div className="relative">
-        {/* Se passarmos a propriedade "icon", ele injeta o SVG dentro do input */}
-        {icon && (
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-            {icon}
-          </div>
-        )}
-        
-        <input
-          {...props} // Aqui entram coisas como type="text", placeholder, onChange, etc.
-          className={`
-            w-full py-2.5 bg-pastoral-bg-soft border border-pastoral-border rounded-xl 
-            text-pastoral-text-dark focus:outline-none focus:border-pastoral-primary-light 
-            focus:ring-2 focus:ring-pastoral-primary-light/20 transition-all text-sm font-medium
-            ${icon ? 'pl-11 pr-4' : 'px-4'} 
-          `}
-        />
+      <div className={styles.wrapper}>
+        {icon && <div className={styles.iconWrapper}>{icon}</div>}
+        <input {...props} className={cn(styles.input, styles.padding)} />
       </div>
     </div>
   );

@@ -3,11 +3,32 @@
 @theme {
   /* Configuração da sua paleta de cores customizada para o ERP */
   /* --color-pastoral-primary: #5c1d33; */
-  --color-pastoral-primary: #5c1d33;
+  /* --color-pastoral-primary: #5c1d33;
   --color-pastoral-accent: #f2cb73;
   --color-pastoral-bg-soft: #fbf9f4;
   --color-pastoral-card-bg: #ffffff;
   --color-pastoral-text-dark: #2d2629;
   --color-pastoral-border: #e8e3d9;
+  --color-pastoral-cell-key: #d1c8b7; */
+
+  --color-pastoral-primary: #5c1d33;
+  --color-pastoral-accent: #f2cb73;
+  --color-pastoral-bg-soft: #fbf9f4;
+  --color-pastoral-card-bg: #ffffff;
+  --color-pastoral-text-dark: #2d2629;
+  /* --color-pastoral-border: #e8e3d9; */
+  /* --color-pastoral-border: #f2cb73; */
+  --color-pastoral-border: #d1c8b7;
   --color-pastoral-cell-key: #d1c8b7;
+
+
 }
+
+/* '--color-primary': '#6D2E46',
+'--color-accent': '#A3B18A',
+'--color-border': '#D8CFC4',
+'--color-background-soft': '#F5EFE6',
+'--color-text-dark': '#2B2B2B',
+'--color-card-bg': '#FFFFFF',
+'--color-input-bg': '#FFFFFF',
+'--color-cell-key': '#C9ADA7' */
