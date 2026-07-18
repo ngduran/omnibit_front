@@ -58,6 +58,7 @@ export default function CadastroConta() {
         <form onSubmit={handleSubmit(handleCadastro)} className="p-8 space-y-6">
           <Input 
             label="Nome Completo"
+            tooltip="Nome para identificação dentro do sistema"
             placeholder="Seu nome"
             {...nomeRegister}
             onChange={(e) => {
@@ -70,6 +71,7 @@ export default function CadastroConta() {
           
           <Input 
             label="Nome de Usuário"
+            tooltip="Utilizado para facilitar a entrada no sistema"
             placeholder="Escolha um apelido"
             {...register('usuario')}
             error={errors.usuario?.message}
@@ -78,6 +80,7 @@ export default function CadastroConta() {
 
           <Input 
             label="E-mail"
+            tooltip="Utilizado a entrada no sistema"
             type="email"
             placeholder="seu@email.com"
             {...register('email')}
@@ -88,6 +91,7 @@ export default function CadastroConta() {
           {/* Novo Campo Telefone */}
           <TelefoneInput 
             label="Telefone"
+            tooltip="Utilizado para receber avisos importantes por meio de aplicativos de mensagens"
             placeholder="(00) 00000-0000"
             {...register('telefone')}
             onChange={(e) => setValue('telefone', e.target.value, { shouldValidate: true })}
@@ -97,6 +101,7 @@ export default function CadastroConta() {
           
           <Input 
             label="Senha"
+            tooltip="Utilizado acessar o sistema"
             type="password"
             placeholder="Crie uma senha forte"
             {...register('senha')}
@@ -106,6 +111,7 @@ export default function CadastroConta() {
 
           <Input 
             label="Confirmar Senha"
+            tooltip="Uma forma de evitar que você erre a sua senha"
             type="password"
             placeholder="Repita sua senha"
             {...register('confirmarSenha')}

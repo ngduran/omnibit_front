@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { passwordSchema, emailSchema } from '../utils/validations'; // Importação centralizada
+import { passwordSchema, emailSchema } from '../utils/validations'; 
 
 const loginSchema = z.object({
   usuario: emailSchema,
@@ -49,6 +49,7 @@ export default function Login() {
         <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
           <Input 
             label="Usuário ou E-mail"
+            tooltip="Email utilizado para acessar o aplicativo"
             type="text"
             placeholder="seu@email.com"            
             {...register('usuario')}
@@ -62,16 +63,10 @@ export default function Login() {
           />
 
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between select-none">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
-                Senha de Acesso
-              </label>
-              <a href="#recuperar" className="text-xs text-pastoral-primary-light font-semibold hover:underline">
-                Esqueceu?
-              </a>
-            </div>
             <Input 
-              type="password"
+              label="Senha de Acesso"
+              tooltip="A senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos."
+              type="password"              
               placeholder="Digite a sua senha"
               {...register('senha')}
               error={errors.senha?.message}
@@ -82,10 +77,12 @@ export default function Login() {
                 </svg>
               }
             />
+            <div className="flex justify-end select-none">
+              <a href="#recuperar" className="text-xs text-pastoral-primary-light font-semibold hover:underline">
+                Esqueceu a senha?
+              </a>
+            </div>
           </div>
-
-        
-
 
           <Button type="submit" disabled={carregando} className="w-full !py-3.5">
             {carregando ? <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div> : "Entrar"}
