@@ -50,8 +50,7 @@ export default function Login() {
           <Input 
             label="Usuário ou E-mail"
             type="text"
-            placeholder="seu@email.com"
-            autoComplete="off"
+            placeholder="seu@email.com"            
             {...register('usuario')}
             error={errors.usuario?.message}
             isValid={!errors.usuario && touchedFields.usuario}
@@ -85,10 +84,13 @@ export default function Login() {
             />
           </div>
 
+        
+
+
           <Button type="submit" disabled={carregando} className="w-full !py-3.5">
             {carregando ? <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div> : "Entrar"}
           </Button>
-
+          
           <div className="relative flex py-2 items-center select-none">
             <div className="flex-grow border-t border-pastoral-border/60"></div>
             <span className="flex-shrink mx-4 text-xs text-slate-400 font-medium">ou</span>

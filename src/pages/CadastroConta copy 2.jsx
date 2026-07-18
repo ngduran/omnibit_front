@@ -5,20 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
-import TelefoneInput from '../components/ui/TelefoneInput'; // Novo componente
 import Button from '../components/ui/Button';
-import { nomeSchema, usuarioSchema, emailSchema, passwordSchema, telefoneSchema } from '../utils/validations';
+import { nomeSchema, usuarioSchema, emailSchema, passwordSchema } from '../utils/validations';
 
 const cadastroSchema = z.object({
   nome: nomeSchema,
   usuario: usuarioSchema,
   email: emailSchema,
-  telefone: telefoneSchema, // Adicionado ao schema
   senha: passwordSchema,
-  confirmarSenha: z.string().min(1, "A confirmação é obrigatória"),
-}).refine((data) => data.senha === data.confirmarSenha, {
-  message: "As senhas não coincidem",
-  path: ["confirmarSenha"],
 });
 
 export default function CadastroConta() {
@@ -28,7 +22,6 @@ export default function CadastroConta() {
   const { 
     register, 
     handleSubmit, 
-    setValue, // Usado para disparar a atualização do valor no hook form
     formState: { errors, touchedFields } 
   } = useForm({
     resolver: zodResolver(cadastroSchema),
@@ -36,14 +29,13 @@ export default function CadastroConta() {
   });
 
   const handleCadastro = async (data) => {
-    // confirmarSenha removido e telefone já vem limpo pelo transform do Zod
-    const { confirmarSenha, ...dadosEnvio } = data;
-    const resultado = await authRegister(dadosEnvio);
+    const resultado = await authRegister(data);
     if (resultado.success) {
       navigate('/login');
     }
   };
 
+  // Interceptador para formatação de nome (Title Case)
   const nomeRegister = register('nome');
 
   return (
@@ -61,6 +53,7 @@ export default function CadastroConta() {
             placeholder="Seu nome"
             {...nomeRegister}
             onChange={(e) => {
+              // Aplica a formatação desejada antes de enviar para o Hook Form
               e.target.value = e.target.value.toLowerCase().replace(/(?:^|\s)\S/g, a => a.toUpperCase());
               nomeRegister.onChange(e);
             }}
@@ -85,16 +78,6 @@ export default function CadastroConta() {
             isValid={!errors.email && touchedFields.email}
           />
           
-          {/* Novo Campo Telefone */}
-          <TelefoneInput 
-            label="Telefone"
-            placeholder="(00) 00000-0000"
-            {...register('telefone')}
-            onChange={(e) => setValue('telefone', e.target.value, { shouldValidate: true })}
-            error={errors.telefone?.message}
-            isValid={!errors.telefone && touchedFields.telefone}
-          />
-          
           <Input 
             label="Senha"
             type="password"
@@ -102,15 +85,6 @@ export default function CadastroConta() {
             {...register('senha')}
             error={errors.senha?.message}
             isValid={!errors.senha && touchedFields.senha}
-          />
-
-          <Input 
-            label="Confirmar Senha"
-            type="password"
-            placeholder="Repita sua senha"
-            {...register('confirmarSenha')}
-            error={errors.confirmarSenha?.message}
-            isValid={!errors.confirmarSenha && touchedFields.confirmarSenha}
           />
           
           <Button type="submit" disabled={loading} className="w-full !py-3.5">

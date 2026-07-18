@@ -89,6 +89,18 @@ export default function Login() {
             />
           </div>
 
+          <div className="flex items-center">
+            <input 
+              id="lembrar" 
+              type="checkbox" 
+              className="w-4 h-4 rounded border-pastoral-border text-pastoral-primary focus:ring-pastoral-primary-light accent-pastoral-primary"
+            />
+            <input id="lembrar" type="checkbox" className="w-4 h-4 rounded border-pastoral-border text-pastoral-primary focus:ring-pastoral-primary-light accent-pastoral-primary" />
+            <label htmlFor="lembrar" className="ml-2 text-xs font-medium text-slate-600 select-none cursor-pointer">
+              Mostrar Senha
+            </label>
+          </div>
+
           <Button type="submit" disabled={carregando} className="w-full !py-3.5">
             {carregando ? <div className="w-5 h-5 border-2 border-pastoral-bg-soft border-t-transparent rounded-full animate-spin"></div> : "Entrar"}
           </Button>

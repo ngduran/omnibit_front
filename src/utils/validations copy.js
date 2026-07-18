@@ -8,7 +8,7 @@ export const passwordSchema = z.string()
   .min(1, "A senha é obrigatória")
   .regex(passwordRegex, "Senha deve ter 8+ caracteres, maiúsculas, minúsculas, números e símbolos.");
 
-// Esquema de e-mail reutilizável
+// Esquema de e-mail reutilizável (opcional, mas recomendado)
 export const emailSchema = z.string().email("Por favor, insira um e-mail válido");
 
 // Novo: Esquema de nome
@@ -21,10 +21,3 @@ export const nomeSchema = z.string()
 export const usuarioSchema = z.string()
   .min(3, "O usuário deve ter pelo menos 3 caracteres")
   .regex(/^[a-zA-Z0-9_-]+$/, "Usuário inválido (use apenas letras, números, _ ou -)");
-
-// Novo: Esquema de telefone (limpa a máscara e valida o comprimento)
-export const telefoneSchema = z.string()
-  .transform((val) => val.replace(/\D/g, "")) // Remove qualquer caractere não numérico
-  .refine((val) => val.length >= 10 && val.length <= 11, {
-    message: "Telefone inválido (mínimo 10 dígitos)",
-  });

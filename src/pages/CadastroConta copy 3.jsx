@@ -5,20 +5,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
-import TelefoneInput from '../components/ui/TelefoneInput'; // Novo componente
 import Button from '../components/ui/Button';
-import { nomeSchema, usuarioSchema, emailSchema, passwordSchema, telefoneSchema } from '../utils/validations';
+import { nomeSchema, usuarioSchema, emailSchema, passwordSchema } from '../utils/validations';
 
+// Esquema com verificação de igualdade entre senhas
 const cadastroSchema = z.object({
   nome: nomeSchema,
   usuario: usuarioSchema,
   email: emailSchema,
-  telefone: telefoneSchema, // Adicionado ao schema
   senha: passwordSchema,
   confirmarSenha: z.string().min(1, "A confirmação é obrigatória"),
 }).refine((data) => data.senha === data.confirmarSenha, {
   message: "As senhas não coincidem",
-  path: ["confirmarSenha"],
+  path: ["confirmarSenha"], // Define onde o erro deve aparecer
 });
 
 export default function CadastroConta() {
@@ -28,7 +27,6 @@ export default function CadastroConta() {
   const { 
     register, 
     handleSubmit, 
-    setValue, // Usado para disparar a atualização do valor no hook form
     formState: { errors, touchedFields } 
   } = useForm({
     resolver: zodResolver(cadastroSchema),
@@ -36,7 +34,7 @@ export default function CadastroConta() {
   });
 
   const handleCadastro = async (data) => {
-    // confirmarSenha removido e telefone já vem limpo pelo transform do Zod
+    // Removemos o campo 'confirmarSenha' antes de enviar ao backend
     const { confirmarSenha, ...dadosEnvio } = data;
     const resultado = await authRegister(dadosEnvio);
     if (resultado.success) {
@@ -83,16 +81,6 @@ export default function CadastroConta() {
             {...register('email')}
             error={errors.email?.message}
             isValid={!errors.email && touchedFields.email}
-          />
-          
-          {/* Novo Campo Telefone */}
-          <TelefoneInput 
-            label="Telefone"
-            placeholder="(00) 00000-0000"
-            {...register('telefone')}
-            onChange={(e) => setValue('telefone', e.target.value, { shouldValidate: true })}
-            error={errors.telefone?.message}
-            isValid={!errors.telefone && touchedFields.telefone}
           />
           
           <Input 
