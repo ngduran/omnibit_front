@@ -4,14 +4,17 @@ import { twMerge } from 'tailwind-merge';
 
 const cn = (...inputs) => twMerge(clsx(inputs));
 
-const Input = React.forwardRef(({ label, icon, className, error, isValid, type = "text", tooltip, ...props }, ref) => {
+const Input = React.forwardRef(({ 
+  label, icon, className, error, isValid, type = "text", tooltip, 
+  isOpen, onToggle, ...props 
+}, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
   const styles = {
     container: "space-y-1.5 w-full",
-    labelWrapper: "flex items-center gap-1.5", // Adicionado para alinhar label e tooltip
+    labelWrapper: "flex items-center gap-1.5",
     label: "text-xs font-bold uppercase tracking-wider text-slate-500 block",
     wrapper: "relative",
     iconWrapper: "absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400",
@@ -38,12 +41,21 @@ const Input = React.forwardRef(({ label, icon, className, error, isValid, type =
         <div className={styles.labelWrapper}>
           <label className={styles.label}>{label}</label>
           {tooltip && (
-            <div className="group relative">
-              <svg className="w-4 h-4 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {/* Tooltip box */}
-              <div className="absolute left-full ml-2 top-0 w-48 p-2 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none shadow-xl">
+            <div className="relative">
+              <button 
+                type="button" 
+                onClick={onToggle}
+                className="focus:outline-none"
+              >
+                <svg className="w-4 h-4 text-slate-400 hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              {/* Tooltip box controlado por prop externa */}
+              <div className={cn(
+                "absolute left-full ml-2 top-0 w-48 p-2 bg-slate-800 text-white text-xs rounded-lg transition-opacity z-50 pointer-events-none shadow-xl",
+                isOpen ? "opacity-100" : "opacity-0"
+              )}>
                 {tooltip}
               </div>
             </div>

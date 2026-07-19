@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
-import TelefoneInput from '../components/ui/TelefoneInput'; // Novo componente
+import TelefoneInput from '../components/ui/TelefoneInput';
 import Button from '../components/ui/Button';
 import { nomeSchema, usuarioSchema, emailSchema, passwordSchema, telefoneSchema } from '../utils/validations';
 
@@ -13,7 +13,7 @@ const cadastroSchema = z.object({
   nome: nomeSchema,
   usuario: usuarioSchema,
   email: emailSchema,
-  telefone: telefoneSchema, // Adicionado ao schema
+  telefone: telefoneSchema,
   senha: passwordSchema,
   confirmarSenha: z.string().min(1, "A confirmação é obrigatória"),
 }).refine((data) => data.senha === data.confirmarSenha, {
@@ -24,11 +24,16 @@ const cadastroSchema = z.object({
 export default function CadastroConta() {
   const { register: authRegister, loading } = useAuth();
   const navigate = useNavigate();
+  const [activeTooltipId, setActiveTooltipId] = useState(null); // Controle de tooltip ativo[cite: 8]
+
+  const toggleTooltip = (id) => {
+    setActiveTooltipId(activeTooltipId === id ? null : id);
+  };
 
   const { 
     register, 
     handleSubmit, 
-    setValue, // Usado para disparar a atualização do valor no hook form
+    setValue, 
     formState: { errors, touchedFields } 
   } = useForm({
     resolver: zodResolver(cadastroSchema),
@@ -36,7 +41,6 @@ export default function CadastroConta() {
   });
 
   const handleCadastro = async (data) => {
-    // confirmarSenha removido e telefone já vem limpo pelo transform do Zod
     const { confirmarSenha, ...dadosEnvio } = data;
     const resultado = await authRegister(dadosEnvio);
     if (resultado.success) {
@@ -59,6 +63,8 @@ export default function CadastroConta() {
           <Input 
             label="Nome Completo"
             tooltip="Nome para identificação dentro do sistema"
+            isOpen={activeTooltipId === 'nome'}
+            onToggle={() => toggleTooltip('nome')}
             placeholder="Seu nome"
             {...nomeRegister}
             onChange={(e) => {
@@ -72,6 +78,8 @@ export default function CadastroConta() {
           <Input 
             label="Nome de Usuário"
             tooltip="Utilizado para facilitar a entrada no sistema"
+            isOpen={activeTooltipId === 'usuario'}
+            onToggle={() => toggleTooltip('usuario')}
             placeholder="Escolha um apelido"
             {...register('usuario')}
             error={errors.usuario?.message}
@@ -81,6 +89,8 @@ export default function CadastroConta() {
           <Input 
             label="E-mail"
             tooltip="Utilizado a entrada no sistema"
+            isOpen={activeTooltipId === 'email'}
+            onToggle={() => toggleTooltip('email')}
             type="email"
             placeholder="seu@email.com"
             {...register('email')}
@@ -88,10 +98,11 @@ export default function CadastroConta() {
             isValid={!errors.email && touchedFields.email}
           />
           
-          {/* Novo Campo Telefone */}
           <TelefoneInput 
             label="Telefone"
             tooltip="Utilizado para receber avisos importantes por meio de aplicativos de mensagens"
+            isOpen={activeTooltipId === 'telefone'}
+            onToggle={() => toggleTooltip('telefone')}
             placeholder="(00) 00000-0000"
             {...register('telefone')}
             onChange={(e) => setValue('telefone', e.target.value, { shouldValidate: true })}
@@ -102,6 +113,8 @@ export default function CadastroConta() {
           <Input 
             label="Senha"
             tooltip="Utilizado acessar o sistema"
+            isOpen={activeTooltipId === 'senha'}
+            onToggle={() => toggleTooltip('senha')}
             type="password"
             placeholder="Crie uma senha forte"
             {...register('senha')}
@@ -112,6 +125,8 @@ export default function CadastroConta() {
           <Input 
             label="Confirmar Senha"
             tooltip="Uma forma de evitar que você erre a sua senha"
+            isOpen={activeTooltipId === 'confirmarSenha'}
+            onToggle={() => toggleTooltip('confirmarSenha')}
             type="password"
             placeholder="Repita sua senha"
             {...register('confirmarSenha')}

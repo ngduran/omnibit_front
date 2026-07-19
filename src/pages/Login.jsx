@@ -6,17 +6,23 @@ import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { passwordSchema, emailSchema } from '../utils/validations'; 
+import { passwordSchema, emailSchema, usuarioSchema } from '../utils/validations'; 
 
 const loginSchema = z.object({
-  usuario: emailSchema,
+  // Permite e-mail ou o alias definido no usuarioSchema
+  usuario: z.union([emailSchema, usuarioSchema]), 
   senha: passwordSchema,
 });
 
 export default function Login() {
   const [carregando, setCarregando] = useState(false);
+  const [activeTooltipId, setActiveTooltipId] = useState(null); // Gerencia o tooltip ativo
   const { login } = useAuth(); 
   const navigate = useNavigate();
+
+  const toggleTooltip = (id) => {
+    setActiveTooltipId(activeTooltipId === id ? null : id);
+  };
 
   const { 
     register, 
@@ -50,6 +56,8 @@ export default function Login() {
           <Input 
             label="Usuário ou E-mail"
             tooltip="Email utilizado para acessar o aplicativo"
+            isOpen={activeTooltipId === 'usuario'}
+            onToggle={() => toggleTooltip('usuario')}
             type="text"
             placeholder="seu@email.com"            
             {...register('usuario')}
@@ -66,6 +74,8 @@ export default function Login() {
             <Input 
               label="Senha de Acesso"
               tooltip="A senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos."
+              isOpen={activeTooltipId === 'senha'}
+              onToggle={() => toggleTooltip('senha')}
               type="password"              
               placeholder="Digite a sua senha"
               {...register('senha')}
