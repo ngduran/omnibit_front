@@ -3,6 +3,8 @@ import * as z from 'zod';
 // Regex centralizada para reutilização
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
+
+
 // Esquema de senha reutilizável
 export const passwordSchema = z.string()
   .min(1, "A senha é obrigatória")
@@ -28,3 +30,15 @@ export const telefoneSchema = z.string()
   .refine((val) => val.length >= 10 && val.length <= 11, {
     message: "Telefone inválido (mínimo 10 dígitos)",
   });
+
+// --- Novos Esquemas para Gestão de Cargos ---
+
+export const cargoNomeSchema = z.string()
+  .min(2, "O nome do cargo deve ter pelo menos 2 caracteres")
+  .max(50, "O nome do cargo não pode exceder 50 caracteres")
+  .transform((val) => val.toUpperCase().trim());
+
+export const cargoDescricaoSchema = z.string()
+  .max(255, "A descrição não pode exceder 255 caracteres")
+  .optional()
+  .or(z.literal(''));  
