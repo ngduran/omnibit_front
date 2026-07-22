@@ -50,16 +50,42 @@ export default function CadastroCargo() {
     mode: 'onBlur',
   });
 
+  // const handleCadastroCargo = async (data) => {
+  //   setLoading(true);
+  //   try {
+  //     const resultado = await cargoService.criar(data);
+  //     if (resultado.success) {
+  //       toast.success("Cargo cadastrado com sucesso!");
+  //       await carregarCargos();
+  //       reset();
+  //     } else {
+  //       toast.error("Falha ao cadastrar cargo", { description: resultado.message });
+  //     }
+  //   } catch (error) {
+  //     toast.error("Erro inesperado ao processar a requisição.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleCadastroCargo = async (data) => {
     setLoading(true);
     try {
-      const resultado = await cargoService.criar(data);
-      if (resultado.success) {
-        toast.success("Cargo cadastrado com sucesso!");
-        await carregarCargos();
-        reset();
+      let resultado;
+      if (editingId) {
+        resultado = await cargoService.atualizar(editingId, data);
       } else {
-        toast.error("Falha ao cadastrar cargo", { description: resultado.message });
+        resultado = await cargoService.criar(data);
+      }
+
+      if (resultado.success) {
+        toast.success(editingId ? "Cargo atualizado com sucesso!" : "Cargo cadastrado com sucesso!");
+        await carregarCargos();
+        handleCancelEdit(); // Limpa o formulário e reseta o editingId
+      } else {
+        toast.error(editingId ? "Falha ao atualizar cargo" : "Falha ao cadastrar cargo", { 
+          description: resultado.message 
+        });
       }
     } catch (error) {
       toast.error("Erro inesperado ao processar a requisição.");
@@ -79,12 +105,21 @@ export default function CadastroCargo() {
     reset({ nome: '', descricao: '' });
   };
 
-  const handleDelete = (id) => {
-    setCargos(cargos.filter(c => c.id !== id));
-    if (editingId === id) {
-      handleCancelEdit();
+  const handleDelete = async (id) => {
+    try {
+      const resultado = await cargoService.deletar(id);
+      if (resultado.success) {
+        toast.success("Cargo apagado com sucesso!");
+        await carregarCargos();
+        if (editingId === id) {
+          handleCancelEdit();
+        }
+      } else {
+        toast.error("Erro ao apagar cargo", { description: resultado.message });
+      }
+    } catch (error) {
+      toast.error("Erro inesperado ao processar a requisição.");
     }
-    toast.success("Cargo apagado com sucesso!");
   };
 
   const nomeRegister = register('nome');
@@ -156,14 +191,14 @@ export default function CadastroCargo() {
               </Button>
             </form>
           </div>
-
+          
           {/* Seção da Tabela posicionada abaixo do formulário */}
           <div className="pt-6 border-t border-slate-200">
-            <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm max-h-[350px] overflow-y-auto">
+            <div className="border border-slate-200 rounded-xl bg-white shadow-sm max-h-[350px] overflow-y-auto overflow-x-auto">
               {cargos.length === 0 ? (
                 <p className="text-center text-slate-400 py-8 text-sm">Nenhum cargo cadastrado.</p>
               ) : (
-                <table className="w-full text-left border-collapse">
+                <table className="w-full min-w-[400px] text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                       <th className="p-3">Cargo</th>
@@ -173,7 +208,7 @@ export default function CadastroCargo() {
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-sm">
                     {cargos.map((cargo, index) => (
-                      <tr key={cargo.uuid || `cargo-${index}`} className="hover:bg-slate-50/80 transition-colors">
+                      <tr key={cargo.id || `cargo-${index}`} className="hover:bg-slate-50/80 transition-colors">
                         <td className="p-3 font-semibold text-slate-700">{cargo.nome}</td>
                         <td className="p-3 text-slate-500 truncate max-w-[250px]">{cargo.descricao || '-'}</td>
                         <td className="p-3 text-right space-x-2 whitespace-nowrap">

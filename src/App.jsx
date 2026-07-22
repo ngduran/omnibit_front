@@ -10,6 +10,7 @@ import { Toaster } from 'sonner';
 import AppToaster from './components/layout/AppToaster';
 import CadastroConta from './pages/CadastroConta';
 import CadastroCargo from './pages/CadastroCargo';
+import CadastroUsuario from './pages/CadastroUsuario';
 
 // Páginas de rascunho temporárias
 const Dashboard = () => <div className="p-8 text-pastoral-text-dark font-bold"><h1>Tela de Dashboard</h1></div>;
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/cargos" element={<ProtectedRoute><Cargos /></ProtectedRoute>} />
             <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
             <Route path="/cad-cargos" element={<ProtectedRoute><CadastroCargo /></ProtectedRoute>} />
+            <Route path="/cad-usuarios" element={<ProtectedRoute><CadastroUsuario /></ProtectedRoute>} />
             
             {/* Redirecionamento Padrão */}
             <Route path="/" element={<Navigate to="/cargos" replace />} />

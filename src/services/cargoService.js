@@ -29,5 +29,30 @@ export const cargoService = {
       const mensagemErro = error.response?.data || 'Erro ao buscar os cargos';
       return { success: false, message: mensagemErro };
     }
+  },
+
+  async atualizar (id, dados) {
+    try {
+      const response = await apiNxd.put(`/cargos/${id}`, dados);
+      return { success: true, data: response.data };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data || "Erro ao atualizar o cargo" 
+      };
+    }
+  },
+
+  async deletar (id) {
+    try {
+      await apiNxd.delete(`/cargos/${id}`);
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        message: error.response?.data || "Erro ao deletar o cargo" 
+      };
+    }
   }
+
 };
