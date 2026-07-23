@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { usuarioService } from '../services/usuarioService';
 import { cargoService } from '../services/cargoService';
-// Importe o serviço responsável por buscar os usuários do Auctoritas (ajuste o caminho se necessário)
 import { authService } from '../services/authService'; 
 import { toast } from 'sonner';
 
@@ -26,7 +25,7 @@ export default function CadastroUsuario() {
     const [resCargos, resPerfis, resUsuariosAuth] = await Promise.all([
       cargoService.listar(),
       usuarioService.listar(),
-      authService.listarUsuarios() // Busca os usuários cadastrados no Auctoritas
+      authService.listarUsuarios()
     ]);
 
     if (resCargos.success) setCargos(resCargos.data);
@@ -54,6 +53,15 @@ export default function CadastroUsuario() {
     } else {
       toast.error('Erro ao vincular', { description: resultado.message });
     }
+  };
+
+  // Função auxiliar para cruzar o authUuid e recuperar o nome do usuário do Auctoritas
+  const obterNomeUsuario = (authUuid) => {
+    if (!authUuid) return 'Usuário não identificado';
+    const usuarioEncontrado = usuariosAuctoritas.find(
+      (u) => u.uuid === authUuid || u.authUuid === authUuid || u.id === authUuid
+    );
+    return usuarioEncontrado ? usuarioEncontrado.nome : 'Usuário não identificado';
   };
 
   return (
@@ -91,7 +99,7 @@ export default function CadastroUsuario() {
         </div>
       </div>
 
-      {/* Seção de Novo Vínculo (Com os Combos de Usuário e Cargo) */}
+      {/* Seção de Novo Vínculo */}
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100">
         <h2 className="text-sm font-extrabold text-slate-700 uppercase mb-4 tracking-wider">
           Atribuir Novo Cargo a Usuário
@@ -111,7 +119,7 @@ export default function CadastroUsuario() {
             >
               <option value="" disabled>Selecione um usuário...</option>
               {usuariosAuctoritas.map((user) => (
-                <option key={user.uuid || user.id} value={user.uuid || user.authUuid}>
+                <option key={user.uuid || user.id} value={user.uuid || user.authUuid || user.id}>
                   {user.nome} {user.email ? `(${user.email})` : ''}
                 </option>
               ))}
@@ -157,8 +165,8 @@ export default function CadastroUsuario() {
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-slate-50 text-xs font-bold text-slate-500 uppercase border-b border-slate-200">
-                  <th className="p-4">Auth UUID (Usuário)</th>
-                  <th className="p-4">Cargo Atribuído (UUID)</th>
+                  <th className="p-4">Nome do Usuário</th>
+                  <th className="p-4">Cargo Atribuído</th>
                   <th className="p-4 text-right">Ações</th>
                 </tr>
               </thead>
@@ -173,11 +181,13 @@ export default function CadastroUsuario() {
                   </tr>
                 ) : (
                   perfisVinculados.map((perfil, index) => (
-                    <tr key={index} className="hover:bg-slate-50/80">
-                      <td className="p-4 font-mono text-xs text-slate-600">{perfil.authUuid}</td>
+                    <tr key={perfil.id || index} className="hover:bg-slate-50/80">
+                      <td className="p-4 font-bold text-slate-800">
+                        {obterNomeUsuario(perfil.authUuid)}
+                      </td>
                       <td className="p-4">
                         <span className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">
-                          {perfil.cargoUuid}
+                          {perfil.cargo?.nome || 'Cargo não especificado'}
                         </span>
                       </td>
                       <td className="p-4 text-right text-xs text-slate-400">Ativo</td>
