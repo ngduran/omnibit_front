@@ -25,11 +25,25 @@ export const usuarioSchema = z.string()
   .regex(/^[a-zA-Z0-9_-]+$/, "Usuário inválido (use apenas letras, números, _ ou -)");
 
 // Novo: Esquema de telefone (limpa a máscara e valida o comprimento)
+// export const telefoneSchema = z.string()
+//   .transform((val) => val.replace(/\D/g, "")) // Remove qualquer caractere não numérico
+//   .refine((val) => val.length >= 10 && val.length <= 11, {
+//     message: "Telefone inválido (mínimo 10 dígitos)",
+//   });
+
 export const telefoneSchema = z.string()
-  .transform((val) => val.replace(/\D/g, "")) // Remove qualquer caractere não numérico
-  .refine((val) => val.length >= 10 && val.length <= 11, {
-    message: "Telefone inválido (mínimo 10 dígitos)",
+  .transform((val) => val.replace(/\D/g, "")) // Remove tudo que não é número
+  .refine((val) => val.length === 11, {
+    message: "Telefone inválido (deve conter exatamente 11 dígitos)",
+  })
+  .transform((val) => {
+    // 2 dígitos (DDD) | 5 dígitos (esquerda) | 4 dígitos (direita)
+    const match = val.match(/^(\d{2})(\d{5})(\d{4})$/);
+    if (!match) return val;
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
   });
+
+
 
 // --- Novos Esquemas para Gestão de Cargos ---
 

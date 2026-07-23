@@ -10,13 +10,9 @@ export default function TelefoneInput({ onChange, value, ...props }) {
       valor = valor.replace(/(\d{2})(\d)/, "($1) $2");
     }
 
-    // Lógica dinâmica para o hífen
-    // Se o valor após a máscara for maior que 14 caracteres, é um celular (9 dígitos)
-    // Caso contrário, é um telefone fixo (8 dígitos)
-    if (valor.length > 14) {
+    // Aplica o hífen sempre após o 5º dígito do número (formato de 11 dígitos: (00) 00000-0000)
+    if (valor.length > 9) {
       valor = valor.replace(/(\d{5})(\d)/, "$1-$2");
-    } else if (valor.length > 9) {
-      valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
     }
 
     // Limita ao tamanho máximo de um celular formatado: (00) 00000-0000 = 15 caracteres
