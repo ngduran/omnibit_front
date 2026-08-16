@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -16,6 +16,7 @@ const cadastroSchema = z.object({
   telefone: telefoneSchema,
   senha: passwordSchema,
   confirmarSenha: z.string().min(1, "A confirmação é obrigatória"),
+  tokenConvite: z.string().optional(),
 }).refine((data) => data.senha === data.confirmarSenha, {
   message: "As senhas não coincidem",
   path: ["confirmarSenha"],
@@ -24,7 +25,9 @@ const cadastroSchema = z.object({
 export default function CadastroConta() {
   const { register: authRegister, loading } = useAuth();
   const navigate = useNavigate();
-  const [activeTooltipId, setActiveTooltipId] = useState(null); // Controle de tooltip ativo[cite: 8]
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('tokenConvite'); // Captura o token da URL se ele existir
+  const [activeTooltipId, setActiveTooltipId] = useState(null);
 
   const toggleTooltip = (id) => {
     setActiveTooltipId(activeTooltipId === id ? null : id);
@@ -42,7 +45,15 @@ export default function CadastroConta() {
 
   const handleCadastro = async (data) => {
     const { confirmarSenha, ...dadosEnvio } = data;
-    const resultado = await authRegister(dadosEnvio);
+    
+    // Se houver um token na URL, ele é anexado ao payload enviado para o servidor.
+    // Caso contrário, vai apenas com os dados padrão do formulário.
+    //const payload = token ? { ...dadosEnvio, tokenConvite } : dadosEnvio;
+
+    // Correção: Atribui explicitamente a variável 'token' à chave 'tokenConvite'
+    const payload = token ? { ...dadosEnvio, tokenConvite: token } : dadosEnvio;
+
+    const resultado = await authRegister(payload);
     if (resultado.success) {
       navigate('/login');
     }

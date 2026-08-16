@@ -31,9 +31,15 @@ export const cargoService = {
     }
   },
 
-  async atualizar (id, dados) {
+  /**
+   * Atualiza um cargo existente usando o UUID
+   * @param {string} uuid - UUID do cargo
+   * @param {Object} dados - Dados atualizados
+   * @returns {Promise<Object>} Resposta da API ou erro tratado
+   */
+  async atualizar(uuid, dados) {
     try {
-      const response = await apiNxd.put(`/cargos/${id}`, dados);
+      const response = await apiNxd.put(`/cargos/${uuid}`, dados);
       return { success: true, data: response.data };
     } catch (error) {
       return { 
@@ -43,9 +49,14 @@ export const cargoService = {
     }
   },
 
-  async deletar (id) {
+  /**
+   * Deleta um cargo usando o UUID
+   * @param {string} uuid - UUID do cargo
+   * @returns {Promise<Object>} Resposta da API ou erro tratado
+   */
+  async deletar(uuid) {
     try {
-      await apiNxd.delete(`/cargos/${id}`);
+      await apiNxd.delete(`/cargos/${uuid}`);
       return { success: true };
     } catch (error) {
       return { 

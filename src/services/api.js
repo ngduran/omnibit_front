@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from 'axios';
 import { ENV } from './apiConfig';
 
@@ -20,7 +19,7 @@ export const apiAuctoritas = axios.create({
   }
 });
 
-// Interceptor para adicionar o token automaticamente nas requisições da NXD
+// --- Interceptadores para NXD ---
 apiNxd.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -29,17 +28,37 @@ apiNxd.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Interceptor para tratar tokens expirados (401)
 apiNxd.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Token expirou ou é inválido: limpa o storage e redireciona
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// --- Interceptadores para AUCTORITAS (Adicionado agora) ---
+apiAuctoritas.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+apiAuctoritas.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Opcional: Se Auctoritas também precisar deslogar em caso de erro 401
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

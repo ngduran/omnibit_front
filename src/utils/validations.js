@@ -44,7 +44,6 @@ export const telefoneSchema = z.string()
   });
 
 
-
 // --- Novos Esquemas para Gestão de Cargos ---
 
 export const cargoNomeSchema = z.string()
@@ -53,6 +52,18 @@ export const cargoNomeSchema = z.string()
   .transform((val) => val.toUpperCase().trim());
 
 export const cargoDescricaoSchema = z.string()
+  .max(255, "A descrição não pode exceder 255 caracteres")
+  .optional()
+  .or(z.literal(''));  
+
+// --- Novos Esquemas para Gestão de Pastoral ---  
+
+  export const pastoralNomeSchema = z.string()
+  .min(2, "O nome do cargo deve ter pelo menos 2 caracteres")
+  .max(50, "O nome do cargo não pode exceder 50 caracteres")
+  .transform((val) => val.toUpperCase().trim());
+
+export const pastoralDescricaoSchema = z.string()
   .max(255, "A descrição não pode exceder 255 caracteres")
   .optional()
   .or(z.literal(''));  
