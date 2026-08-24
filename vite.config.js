@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base: "./",
+  base: "./omnibit_front/",
   test: {
     globals: true,
     environment: 'jsdom',
