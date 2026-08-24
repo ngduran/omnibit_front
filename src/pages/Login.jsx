@@ -35,6 +35,13 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     setCarregando(true);
+
+    // Identifica se o valor digitado é um e-mail ou um alias
+    const ehEmail = data.usuario.includes('@'); 
+
+    // Log para você debugar na hora certa no console do navegador
+    //console.log(ehEmail ? ">> Enviando via E-MAIL" : ">> Enviando via ALIAS/USUÁRIO", data.usuario);
+
     const resultado = await login({ email: data.usuario, senha: data.senha });
     setCarregando(false);
 

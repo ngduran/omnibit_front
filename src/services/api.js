@@ -54,14 +54,14 @@ apiAuctoritas.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-apiAuctoritas.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      // Opcional: Se Auctoritas também precisar deslogar em caso de erro 401
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+// apiAuctoritas.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response && error.response.status === 401) {
+//       // Opcional: Se Auctoritas também precisar deslogar em caso de erro 401
+//       localStorage.removeItem('token');
+//       window.location.href = '/login';
+//     }
+//     return Promise.reject(error);
+//   }
+// );

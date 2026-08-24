@@ -38,13 +38,16 @@ export default function App() {
     <AuthProvider>
       <UIProvider> {/* Envolvendo a aplicação */}
         <AppToaster />
+        
         <BrowserRouter>
           <Routes>
             {/* Rota Pública */}
             <Route path="/login" element={<Login />} />
+            
             <Route path="/cadastro-conta" element={<CadastroConta />} />
 
             {/* Rotas Protegidas (Todas no mesmo nível, sem confusão de caminhos) */}
+            
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/cargos" element={<ProtectedRoute><Cargos /></ProtectedRoute>} />
             <Route path="/usuarios" element={<ProtectedRoute><Usuarios /></ProtectedRoute>} />
@@ -60,6 +63,7 @@ export default function App() {
             <Route path="/" element={<Navigate to="/cargos" replace />} />
           </Routes>
         </BrowserRouter>
+      
       </UIProvider>
     </AuthProvider>
   );

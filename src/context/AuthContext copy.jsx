@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-// import { toast } from 'sonner'; 
-import { Mensagem } from '../utils/mensageiro';
+import { toast } from 'sonner'; 
 import { apiAuctoritas } from '../services/api'; 
 
 const AuthContext = createContext(null);
@@ -19,21 +18,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', response.data.token);
       }
       setIsAuthenticated(true);
-      // toast.success('Bem-vindo de volta!');
-      await Mensagem.sucesso('Bem-vindo de volta!');
+      toast.success('Bem-vindo de volta!');
       return { success: true };
     } catch (error) {
-
-      //console.log("LOG DO CATCH:", error.response);
-      // 1. Extraímos o status do erro (ex: 401)
-      const statusErro = error.response?.status || 401;
-
       const mensagemErro = error.response?.data?.message || 'Erro ao conectar com o servidor';
-      //toast.error('Falha no Login', { description: mensagemErro, duration: 4000 });
-      //await Mensagem.erro(error.response?.status || 500, mensagemErro);
-      
-      await Mensagem.erro(statusErro, mensagemErro);
-      
+      toast.error('Falha no Login', { description: mensagemErro, duration: 4000 });
       return { success: false, message: mensagemErro };
     } finally {
       setLoading(false);
@@ -47,24 +36,21 @@ export const AuthProvider = ({ children }) => {
       // userData deve conter campos como nome, email, senha e, opcionalmente, a origem (ex: "PASTORAL")
       await apiAuctoritas.post('/usuario/create', userData);
       
-      //toast.success('Conta criada com sucesso! Verifique seu e-mail para confirmar a ativação.');
-      await Mensagem.sucesso('Conta criada com sucesso! Verifique seu e-mail para confirmar a ativação.');
+      toast.success('Conta criada com sucesso! Verifique seu e-mail para confirmar a ativação.');
       return { success: true };
     } catch (error) {
       const mensagemErro = error.response?.data || 'Erro ao realizar cadastro';
-      //toast.error('Falha no Cadastro', { description: mensagemErro, duration: 4000 });
-      await Mensagem.erro(error.response?.status || 400, mensagemErro);
+      toast.error('Falha no Cadastro', { description: mensagemErro, duration: 4000 });
       return { success: false, message: mensagemErro };
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = async () => {
+  const logout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
-    //toast.info('Sessão encerrada com sucesso.');
-    await Mensagem.aviso('Sessão encerrada com sucesso');
+    toast.info('Sessão encerrada com sucesso.');
   };
 
   return (

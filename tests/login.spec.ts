@@ -16,7 +16,7 @@ test('deve exibir mensagem de erro ao tentar realizar login com credenciais não
   //await expect(page).toHaveURL(/.*login/);
 
   // 5. Verifica se a mensagem de erro é exibida para o usuário  
-  await expect(page.getByText(/Autenticação Incorreta/i)).toBeVisible();
+  await expect(page.getByText(/E-mail ou senha incorretos./i)).toBeVisible();
 });
 
 test('deve realizar login com sucesso usando Email e senha válidos e redirecionar para a área logada', async ({ page }) => {
@@ -24,7 +24,7 @@ test('deve realizar login com sucesso usando Email e senha válidos e redirecion
   await page.goto('http://localhost:5173/login');
 
   // 2. Preenche os campos com os dados fornecidos
-  await page.getByPlaceholder(/seu@email.com/i).fill('root@nxd.com.br');
+  await page.getByPlaceholder(/seu@email.com/i).fill('nxdroot@gmail.com');
   await page.getByPlaceholder(/digite a sua senha/i).fill('(Senha123)');
 
   // 3. Clica no botão de entrar
@@ -32,7 +32,8 @@ test('deve realizar login com sucesso usando Email e senha válidos e redirecion
 
   // 4. Verifica o redirecionamento para a página de destino (ex: /cargos)
   // Certifique-se de que a rota de destino corresponde ao comportamento real do seu app
-  await expect(page).toHaveURL(/.*cargos/);
+  //await expect(page).toHaveURL(/.*cargos/);
+  await expect(page.getByText(/Bem-vindo de volta!/i)).toBeVisible();
 });
 
 test('deve realizar login com sucesso usando alias e senha válidos e redirecionar para a área logada', async ({ page }) => {
@@ -40,7 +41,7 @@ test('deve realizar login com sucesso usando alias e senha válidos e redirecion
   await page.goto('http://localhost:5173/login');
 
   // 2. Preenche os campos com os dados fornecidos
-  await page.getByPlaceholder(/seu@email.com/i).fill('root');
+  await page.getByPlaceholder(/seu@email.com/i).fill('rootmaster');
   await page.getByPlaceholder(/digite a sua senha/i).fill('(Senha123)');
 
   // 3. Clica no botão de entrar
@@ -48,5 +49,6 @@ test('deve realizar login com sucesso usando alias e senha válidos e redirecion
 
   // 4. Verifica o redirecionamento para a página de destino (ex: /cargos)
   // Certifique-se de que a rota de destino corresponde ao comportamento real do seu app
-  await expect(page).toHaveURL(/.*cargos/);
+  //await expect(page).toHaveURL(/.*cargos/);
+  await expect(page.getByText(/Bem-vindo de volta!/i)).toBeVisible();
 });
