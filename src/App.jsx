@@ -39,7 +39,7 @@ export default function App() {
       <UIProvider> {/* Envolvendo a aplicação */}
         <AppToaster />
         
-        <BrowserRouter basename="/omnibit_front">
+        <BrowserRouter>
           <Routes>
             {/* Rota Pública */}
             <Route path="/login" element={<Login />} />
