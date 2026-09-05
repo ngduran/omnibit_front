@@ -8,6 +8,10 @@ const USE_NGROK = true;
 
 const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
 
+console.log("==============================================");
+console.log(NGROK_URL);
+console.log("==============================================");
+
 // Pega dinamicamente o endereço da barra de URL ('localhost' no PC ou '192.168.1.4' no celular)
 const currentHost = window.location.hostname;
 
