@@ -9,7 +9,7 @@ const USE_NGROK = true;
 const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
 
 console.log("==============================================");
-console.log(NGROK_URL);
+console.log("URL Final Auctoritas:", ENV.AUCTORITAS_API);
 console.log("==============================================");
 
 // Pega dinamicamente o endereço da barra de URL ('localhost' no PC ou '192.168.1.4' no celular)
@@ -26,3 +26,6 @@ export const ENV = {
   NXD_API: USE_NGROK && ID_NXD ? NGROK_URL(ID_NXD) : `http://${currentHost}:8080`,
   AUCTORITAS_API: USE_NGROK && ID_AUCT ? NGROK_URL(ID_AUCT) : `http://${currentHost}:8085`,
 };
+
+// Imprime a URL que o Axios realmente vai usar
+console.log("URL Final Auctoritas:", ENV.AUCTORITAS_API);
