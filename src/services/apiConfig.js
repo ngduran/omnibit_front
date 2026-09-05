@@ -23,7 +23,7 @@ export const ENV = {
   AUCTORITAS_API: USE_NGROK && ID_AUCT ? NGROK_URL(ID_AUCT) : `http://${currentHost}:8085`,
 };
 
-// Imprime a URL que o Axios realmente vai usar
+// 2. O log que você queria
 console.log("==============================================");
 console.log("URL Final Auctoritas:", ENV.AUCTORITAS_API);
 console.log("==============================================");
