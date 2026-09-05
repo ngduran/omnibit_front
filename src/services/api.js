@@ -6,7 +6,8 @@ export const apiNxd = axios.create({
   baseURL: ENV.NXD_API,
   headers: { 
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'ngrok-skip-browser-warning': 'true', // Ignora a tela intermediária do Ngrok
   }
 });
 
@@ -15,7 +16,8 @@ export const apiAuctoritas = axios.create({
   baseURL: ENV.AUCTORITAS_API,
   headers: { 
     'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    'Accept': 'application/json',
+    'ngrok-skip-browser-warning': 'true', // Ignora a tela intermediária do Ngrok
   }
 });
 
