@@ -24,6 +24,10 @@ export const apiAuctoritas = axios.create({
 // --- Interceptadores para NXD ---
 apiNxd.interceptors.request.use(
   (config) => {
+
+    // GARANTIA NGROK: Injeta o cabeçalho diretamente na requisição para evitar bloqueios do Ngrok
+    config.headers['ngrok-skip-browser-warning'] = 'true';
+
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -47,6 +51,10 @@ apiNxd.interceptors.response.use(
 // --- Interceptadores para AUCTORITAS (Adicionado agora) ---
 apiAuctoritas.interceptors.request.use(
   (config) => {
+
+    // GARANTIA NGROK: Injeta o cabeçalho diretamente na requisição para evitar bloqueios do Ngrok
+    config.headers['ngrok-skip-browser-warning'] = 'true';
+
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
