@@ -4,7 +4,7 @@ const ID_NXD = localStorage.getItem('NGROK_ID_NXD') || '';
 const ID_AUCT = localStorage.getItem('NGROK_ID_AUCT') || '';
 
 // CHAVE DE CONTROLE: Alterne para 'false' para usar localhost
-const USE_NGROK = false; 
+const USE_NGROK = true; 
 
 const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
 
