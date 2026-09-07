@@ -6,7 +6,7 @@ const ID_AUCT = localStorage.getItem('NGROK_ID_AUCT') || '';
 // CHAVE DE CONTROLE: Alterne para 'false' para usar localhost
 const USE_NGROK = true; 
 
-const NGROK_URL = (id) => `${id}.ngrok-free.app`;
+const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
 
 // Pega dinamicamente o endereço da barra de URL ('localhost' no PC ou '192.168.1.4' no celular)
 const currentHost = window.location.hostname;
