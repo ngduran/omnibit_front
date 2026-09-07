@@ -19,8 +19,7 @@ jobs:
      run: npx playwright install --with-deps
    - name: Run Playwright tests
      run: npx playwright test
-     env:
-        PLAYWRIGHT_TEST_IGNORE: '**/login-completo.spec.ts' 
+      run: npx playwright test $(find tests -name "*.spec.ts" ! -name "login-completo.spec.ts")
    - uses: actions/upload-artifact@v4
      if: ${{ !cancelled() }}
      with:
