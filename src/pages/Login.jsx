@@ -24,6 +24,7 @@ export default function Login() {
     setActiveTooltipId(activeTooltipId === id ? null : id);
   };
 
+
   const { 
     register, 
     handleSubmit, 
@@ -33,6 +34,7 @@ export default function Login() {
     mode: 'onBlur',
   });
 
+  
   const onSubmit = async (data) => {
     setCarregando(true);
 
