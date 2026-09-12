@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
-import { ENV } from '../src/services/apiConfig';
+// scripts/data-seed.ts
+import fetch from 'node-fetch'; // Certifique-se de ter instalado: npm install node-fetch
 
-const API_URL = `${ENV.NXD_API}/api/test`;
+const API_URL = 'http://localhost:8080/api/test'; // Ajuste conforme seu endpoint de setup
 
 const users = [
   { email: 'usuario@teste.com', senha: 'Senha123!', validationEmail: true, verificationCode: null },

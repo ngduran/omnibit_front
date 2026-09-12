@@ -43,6 +43,21 @@ export default function GerenciarConvites() {
     }
   };
 
+  /**
+   * Gera a URL completa do convite dinamicamente de acordo com o ambiente
+   * Funciona tanto localmente (localhost:5173) quanto no GitHub Pages (/omnibit_front)
+   */
+  const gerarUrlConvite = (tokenOuCodigo) => {
+    if (!tokenOuCodigo) return '';
+    
+    const origin = window.location.origin;
+    const pathPrefix = window.location.pathname.startsWith('/omnibit_front') ? '/omnibit_front' : '';
+    
+    return `${origin}${pathPrefix}/cadastro-conta?tokenConvite=${tokenOuCodigo}`;
+  };
+
+
+
   const handleGerarConvite = async (e) => {
     e.preventDefault();
     // Correção: Pessoa removida da obrigatoriedade
@@ -70,16 +85,10 @@ export default function GerenciarConvites() {
     }
   };
 
-  // const copiarLink = (token) => {
-  //   const link = `https://proftime.com/cadastro?token=${token}`;
-  //   navigator.clipboard.writeText(link);
-  //   toast.success('Link copiado!');
-  // };
-
-  const copiarLink = (token) => {
-    const link = `http://localhost:5173/cadastro-conta?tokenConvite=${token}`;
+  const copiarLink = (tokenOuCodigo) => {
+    const link = gerarUrlConvite(tokenOuCodigo);
     navigator.clipboard.writeText(link);
-    toast.success('Link copiado!');
+    toast.success('Link de convite copiado!');
   };
 
   const invalidarConvite = async (id) => {
@@ -230,7 +239,9 @@ export default function GerenciarConvites() {
                 </tr>
               ) : (
                 convites.map((convite, index) => {
-                  const isAtivo = convite.status === 'PENDENTE';
+                  const isAtivo = convite.status === 'PENDENTE';                  
+                  const tokenVal = convite.token || convite.codigo;
+                  const urlCompleta = gerarUrlConvite(tokenVal);
                   return (
                     <tr key={convite.id || index} className="hover:bg-slate-50/60 transition-colors">
                       
@@ -239,8 +250,8 @@ export default function GerenciarConvites() {
                         <div className="w-9 h-9 rounded-full bg-[#6b2142] text-white font-bold text-xs flex items-center justify-center shrink-0">
                           {obterIniciais(convite.nomeConvidado)}
                         </div>
-                        <span className={`font-bold ${isAtivo ? 'text-slate-800' : 'text-slate-400'}`}>
-                          {convite.nomeConvidado}
+                        <span className={`font-bold ${isAtivo ? 'text-slate-800' : 'text-slate-400'}`}>                          
+                          {convite.nomeConvidado || 'Convidado Externo'}
                         </span>
                       </td>
 
@@ -260,8 +271,8 @@ export default function GerenciarConvites() {
                       <td className="p-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg max-w-[200px] truncate">
                           <span className="text-slate-400 text-xs">🔗</span>
-                          <span className="text-xs font-mono text-slate-500 truncate">
-                            https://proftime.com/cadastro?token={convite.token}
+                          <span className="text-xs font-mono text-slate-500 truncate">                            
+                            {urlCompleta || 'Link indisponível'}
                           </span>
                         </div>
                       </td>
@@ -269,6 +280,9 @@ export default function GerenciarConvites() {
                       {/* Data */}
                       <td className="p-4 text-xs text-slate-500 whitespace-nowrap">
                         {new Date(convite.dataCriacao || convite.dataExpiracao).toLocaleDateString('pt-BR')}
+
+                        {convite.dataCriacao ? new Date(convite.dataCriacao).toLocaleDateString('pt-BR') : convite.dataExpiracao 
+                                             ? new Date(convite.dataExpiracao).toLocaleDateString('pt-BR') : '-'}
                       </td>
 
                       {/* Status */}
@@ -280,8 +294,8 @@ export default function GerenciarConvites() {
                       <td className="p-4">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            type="button"
-                            onClick={() => copiarLink(convite.token)}
+                            type="button"                            
+                            onClick={() => copiarLink(tokenVal)}
                             disabled={!isAtivo}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
                               isAtivo 
@@ -293,8 +307,8 @@ export default function GerenciarConvites() {
                           </button>
                           
                           <button
-                            type="button"
-                            onClick={() => invalidarConvite(convite.id)}
+                            type="button"                            
+                            onClick={() => invalidarConvite(convite.id || convite.uuid)}
                             disabled={!isAtivo}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
                               isAtivo 

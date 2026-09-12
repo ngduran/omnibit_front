@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { ENV } from './apiConfig';
+import { ROUTES } from '../config/routes';
 
-// Instância para o seu Back-end principal (NXD)
+// Instância para o Back-end principal (NXD)
 export const apiNxd = axios.create({
   baseURL: ENV.NXD_API,
   headers: { 
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'ngrok-skip-browser-warning': 'true', // Ignora a tela intermediária do Ngrok
+    'ngrok-skip-browser-warning': 'true',
   }
 });
 
@@ -17,61 +18,58 @@ export const apiAuctoritas = axios.create({
   headers: { 
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'ngrok-skip-browser-warning': 'true', // Ignora a tela intermediária do Ngrok
+    'ngrok-skip-browser-warning': 'true',
   }
 });
 
-// --- Interceptadores para NXD ---
-apiNxd.interceptors.request.use(
-  (config) => {
+/**
+ * Trata sessões expiradas redirecionando para a rota de login unificada.
+ * Evita o redirecionamento automático durante a tentativa de login para permitir a exibição de erros.
+ */
+const tratarSessaoExpirada = (error) => {
+  const urlRequisicao = error.config?.url || '';
+  const estaNaTelaDeLogin = typeof window !== 'undefined' && window.location.pathname.includes('/login');
+  const ehRotaDeAutenticacao = urlRequisicao.includes('/login') || urlRequisicao.includes('/auth');
 
-    // GARANTIA NGROK: Injeta o cabeçalho diretamente na requisição para evitar bloqueios do Ngrok
-    config.headers['ngrok-skip-browser-warning'] = 'true';
+  // Não redireciona se a falha ocorreu no próprio form de login
+  if (ehRotaDeAutenticacao || estaNaTelaDeLogin) {
+    return;
+  }
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  if (typeof localStorage !== 'undefined') localStorage.removeItem('token');
+  if (typeof window !== 'undefined') window.location.href = ROUTES.PUBLIC.LOGIN;
+};
 
+// --- Interceptadores de Requisição ---
+const injetarTokenEHeaders = (config) => {
+  config.headers['ngrok-skip-browser-warning'] = 'true';
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+};
+
+apiNxd.interceptors.request.use(injetarTokenEHeaders, (error) => Promise.reject(error));
+apiAuctoritas.interceptors.request.use(injetarTokenEHeaders, (error) => Promise.reject(error));
+
+// --- Interceptadores de Resposta ---
 apiNxd.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+    if (error.response?.status === 401) {
+      tratarSessaoExpirada(error);
     }
     return Promise.reject(error);
   }
 );
 
-// --- Interceptadores para AUCTORITAS (Adicionado agora) ---
-apiAuctoritas.interceptors.request.use(
-  (config) => {
-
-    // GARANTIA NGROK: Injeta o cabeçalho diretamente na requisição para evitar bloqueios do Ngrok
-    config.headers['ngrok-skip-browser-warning'] = 'true';
-
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+apiAuctoritas.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      tratarSessaoExpirada(error);
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
+    return Promise.reject(error);
+  }
 );
-
-// apiAuctoritas.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       // Opcional: Se Auctoritas também precisar deslogar em caso de erro 401
-//       localStorage.removeItem('token');
-//       window.location.href = '/login';
-//     }
-//     return Promise.reject(error);
-//   }
-// );

@@ -1,7 +1,7 @@
+// scripts/database-cleanup.ts
 import fetch from 'node-fetch';
-import { ENV } from '../src/services/apiConfig';
 
-const API_URL = `${ENV.NXD_API}/api/test`;
+const API_URL = 'http://localhost:8080/api/test'; // Ajuste conforme seu endpoint de cleanup
 
 const emailsToDelete = [
   'usuario@teste.com',
