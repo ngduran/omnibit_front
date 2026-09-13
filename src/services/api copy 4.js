@@ -23,47 +23,21 @@ export const apiAuctoritas = axios.create({
 });
 
 /**
- * Trata sessões expiradas/inválidas (HTTP 401), limpando o token, salvando a mensagem
- * retornada pelo backend no sessionStorage e redirecionando para a rota de login.
+ * Trata sessões expiradas redirecionando para a rota de login unificada.
+ * Evita o redirecionamento automático durante a tentativa de login para permitir a exibição de erros.
  */
 const tratarSessaoExpirada = (error) => {
   const urlRequisicao = error.config?.url || '';
   const estaNaTelaDeLogin = typeof window !== 'undefined' && window.location.pathname.includes('/login');
   const ehRotaDeAutenticacao = urlRequisicao.includes('/login') || urlRequisicao.includes('/auth');
 
-  // ALTERAÇÃO: Sempre removemos o token expirado/inválido do localStorage imediatamente,
-  // garantindo que não permaneçam credenciais antigas salvas.
-  if (typeof localStorage !== 'undefined') {
-    localStorage.removeItem('token');
-  }
-
-  // ADICIONADO: Extrai a mensagem enviada pelo backend (ex: "Sua sessão expirou. Faça login novamente.")
-  const mensagemBackend = error.response?.data?.mensagem || 'Sua sessão expirou. Faça login novamente.';
-
-  /* CÓDIGO ANTERIOR RETIRADO/REATORADO:
-   * O 'return' antecipado impedia o salvamento da mensagem e a limpeza do token quando a requisição falhava.
-   *
-   * if (ehRotaDeAutenticacao || estaNaTelaDeLogin) {
-   *   return;
-   * }
-   */
-
-  // ALTERAÇÃO: Se a requisição foi disparada pelo próprio formulário de login (POST /auth/login),
-  // interrompemos aqui para que o componente do formulário exiba a mensagem diretamente na tela.
-  if (ehRotaDeAutenticacao) {
+  // Não redireciona se a falha ocorreu no próprio form de login
+  if (ehRotaDeAutenticacao || estaNaTelaDeLogin) {
     return;
   }
 
-  // ADICIONADO: Armazena a mensagem temporariamente no sessionStorage para que a tela de Login
-  // possa lê-la e exibi-la ao usuário após o redirecionamento.
-  if (typeof sessionStorage !== 'undefined') {
-    sessionStorage.setItem('sessao_expirada_msg', mensagemBackend);
-  }
-
-  // ALTERAÇÃO: Redireciona para o login apenas se o usuário ainda não estiver na tela de login.
-  if (typeof window !== 'undefined' && !estaNaTelaDeLogin) {
-    window.location.href = ROUTES.PUBLIC.LOGIN;
-  }
+  if (typeof localStorage !== 'undefined') localStorage.removeItem('token');
+  if (typeof window !== 'undefined') window.location.href = ROUTES.PUBLIC.LOGIN;
 };
 
 // --- Interceptadores de Requisição ---

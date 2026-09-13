@@ -6,9 +6,6 @@ import { pastoralService } from '../services/pastoralService';
 import { authService } from '../services/authService'; 
 import { toast } from 'sonner';
 
-// ADICIONADO: Importação do centralizador de rotas
-import { ROUTES } from '../config/routes';
-
 export default function GerenciarConvites() {
   const [cargos, setCargos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
@@ -46,35 +43,31 @@ export default function GerenciarConvites() {
     }
   };
 
-  /* CÓDIGO ANTERIOR RETIRADO/REATORADO:
-   * A função montava a URL manualmente usando 'window.location.origin' e verificando '/omnibit_front'.
-   * 
-   * const gerarUrlConvite = (tokenOuCodigo) => {
-   *   if (!tokenOuCodigo) return '';
-   *   const origin = window.location.origin;
-   *   const pathPrefix = window.location.pathname.startsWith('/omnibit_front') ? '/omnibit_front' : '';
-   *   return `${origin}${pathPrefix}/cadastro-conta?tokenConvite=${tokenOuCodigo}`;
-   * };
-   */
-
   /**
-   * ALTERAÇÃO: Agora utiliza o gerador de links centralizado 'ROUTES.BUILD_EXTERNAL_LINK',
-   * mantendo padrão único no projeto e suporte isomórfico ao ambiente (Local vs GH Pages).
+   * Gera a URL completa do convite dinamicamente de acordo com o ambiente
+   * Funciona tanto localmente (localhost:5173) quanto no GitHub Pages (/omnibit_front)
    */
   const gerarUrlConvite = (tokenOuCodigo) => {
     if (!tokenOuCodigo) return '';
-    return ROUTES.BUILD_EXTERNAL_LINK(tokenOuCodigo);
+    
+    const origin = window.location.origin;
+    const pathPrefix = window.location.pathname.startsWith('/omnibit_front') ? '/omnibit_front' : '';
+    
+    return `${origin}${pathPrefix}/cadastro-conta?tokenConvite=${tokenOuCodigo}`;
   };
+
+
 
   const handleGerarConvite = async (e) => {
     e.preventDefault();
+    // Correção: Pessoa removida da obrigatoriedade
     if (!cargoUuidInput || !pastoralInput) {
       toast.warning('Selecione uma pastoral e um cargo.');
       return;
     }
 
     const payload = {
-      pessoaUuid: pessoaInput || null,
+      pessoaUuid: pessoaInput || null, // Se estiver vazio, envia null explicitamente
       pastoralUuid: pastoralInput,
       cargoUuid: cargoUuidInput,
     };
@@ -134,11 +127,12 @@ export default function GerenciarConvites() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 font-sans">
+      
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-8">
         
-        {/* Topo: Título e Bandeiras */}
+        {/* Topo: Título e Bandeiras (Estilo texto BR PY) */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-          <div className="w-12" />
+          <div className="w-12" /> {/* Espaçador para balancear e centralizar o título */}
           <h1 className="text-xl md:text-2xl font-bold text-[#6b2142] tracking-wide text-center">
             Convite
           </h1>
@@ -148,10 +142,10 @@ export default function GerenciarConvites() {
           </div>
         </div>
 
-        {/* Formulário */}
+        {/* Formulário: Layout correspondente à image_ff181f.png */}
         <form onSubmit={handleGerarConvite} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
           
-          {/* Pastoral */}
+          {/* Campo Pastoral (col-span-3) - Primeiro Campo */}
           <div className="md:col-span-3">
             <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
               Pastoral <span className="text-slate-400 font-normal">?</span>
@@ -171,7 +165,7 @@ export default function GerenciarConvites() {
             </select>
           </div>
 
-          {/* Pessoa */}
+          {/* Campo Pessoa (col-span-4) - Segundo Campo */}
           <div className="md:col-span-4">
             <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
               Pessoa <span className="text-slate-400 font-normal">?</span>
@@ -190,7 +184,7 @@ export default function GerenciarConvites() {
             </select>
           </div>
 
-          {/* Cargo */}
+          {/* Campo Cargo (col-span-3) - Terceiro Campo */}
           <div className="md:col-span-3">
             <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
               Cargo <span className="text-slate-400 font-normal">?</span>
@@ -210,7 +204,7 @@ export default function GerenciarConvites() {
             </select>
           </div>
 
-          {/* Botão Gerar */}
+          {/* Botão Gerar Link (col-span-2) */}
           <div className="md:col-span-2">
             <button
               type="submit"
@@ -245,15 +239,11 @@ export default function GerenciarConvites() {
                 </tr>
               ) : (
                 convites.map((convite, index) => {
-                  const isAtivo = convite.status === 'PENDENTE';
-                  
-                  // ALTERAÇÃO: Prioriza o 'codigo' curto gerado pelo backend (ex: 'aB8x9Z2k');
-                  // faz fallback para 'token' se for um registro antigo.
-                  const tokenVal = convite.codigo || convite.token;
+                  const isAtivo = convite.status === 'PENDENTE';                  
+                  const tokenVal = convite.token || convite.codigo;
                   const urlCompleta = gerarUrlConvite(tokenVal);
-
                   return (
-                    <tr key={convite.id || convite.uuid || index} className="hover:bg-slate-50/60 transition-colors">
+                    <tr key={convite.id || index} className="hover:bg-slate-50/60 transition-colors">
                       
                       {/* Nome com Avatar */}
                       <td className="p-4 flex items-center gap-3">
@@ -265,7 +255,7 @@ export default function GerenciarConvites() {
                         </span>
                       </td>
 
-                      {/* Atribuição */}
+                      {/* Atribuição (Pastoral e Cargo) */}
                       <td className="p-4">
                         <div className="flex flex-col">
                           <span className={`font-bold ${isAtivo ? 'text-slate-700' : 'text-slate-400'}`}>
@@ -281,7 +271,7 @@ export default function GerenciarConvites() {
                       <td className="p-4">
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg max-w-[200px] truncate">
                           <span className="text-slate-400 text-xs">🔗</span>
-                          <span className="text-xs font-mono text-slate-500 truncate" title={urlCompleta}>                            
+                          <span className="text-xs font-mono text-slate-500 truncate">                            
                             {urlCompleta || 'Link indisponível'}
                           </span>
                         </div>
@@ -289,11 +279,10 @@ export default function GerenciarConvites() {
 
                       {/* Data */}
                       <td className="p-4 text-xs text-slate-500 whitespace-nowrap">
-                        {convite.dataCriacao 
-                          ? new Date(convite.dataCriacao).toLocaleDateString('pt-BR') 
-                          : convite.dataExpiracao 
-                            ? new Date(convite.dataExpiracao).toLocaleDateString('pt-BR') 
-                            : '-'}
+                        {new Date(convite.dataCriacao || convite.dataExpiracao).toLocaleDateString('pt-BR')}
+
+                        {convite.dataCriacao ? new Date(convite.dataCriacao).toLocaleDateString('pt-BR') : convite.dataExpiracao 
+                                             ? new Date(convite.dataExpiracao).toLocaleDateString('pt-BR') : '-'}
                       </td>
 
                       {/* Status */}

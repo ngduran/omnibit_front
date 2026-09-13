@@ -1,9 +1,10 @@
+// src/services/conviteService.js
 import { apiAuctoritas } from './api';
 
 export const conviteService = {
   /**
    * Gera um novo convite no back-end
-   * @param {Object} payload - Dados do convite (pessoaUuid, pastoralUuid, cargoUuid)
+   * @param {Object} payload - Dados do convite (pessoaId, pastoralId, cargoUuid)
    * @returns {Promise<Object>} Resposta da API ou erro tratado
    */
   async gerar(payload) {
@@ -11,23 +12,7 @@ export const conviteService = {
       const response = await apiAuctoritas.post('/convites/gerar', payload);
       return { success: true, data: response.data };
     } catch (error) {
-      const mensagemErro = error.response?.data?.mensagem || error.response?.data || 'Erro ao gerar o convite';
-      return { success: false, message: mensagemErro };
-    }
-  },
-
-  /**
-   * ADICIONADO: Consulta os detalhes do convite pelo código curto (ex: 'aB8x9Z2k')
-   * Usado na página de Cadastro para pré-carregar os dados da Pastoral/Cargo
-   * @param {string} codigoOuToken - Código ou token do convite
-   * @returns {Promise<Object>} Detalhes do convite (pastoral, cargo, status)
-   */
-  async consultarPorCodigo(codigoOuToken) {
-    try {
-      const response = await apiAuctoritas.get(`/convites/validar/${codigoOuToken}`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      const mensagemErro = error.response?.data?.mensagem || 'Convite inválido ou expirado.';
+      const mensagemErro = error.response?.data || 'Erro ao gerar o convite';
       return { success: false, message: mensagemErro };
     }
   },
@@ -41,7 +26,7 @@ export const conviteService = {
       const response = await apiAuctoritas.get('/convites');
       return { success: true, data: response.data };
     } catch (error) {
-      const mensagemErro = error.response?.data?.mensagem || error.response?.data || 'Erro ao buscar os convites';
+      const mensagemErro = error.response?.data || 'Erro ao buscar os convites';
       return { success: false, message: mensagemErro };
     }
   },
@@ -58,8 +43,9 @@ export const conviteService = {
     } catch (error) {
       return { 
         success: false, 
-        message: error.response?.data?.mensagem || error.response?.data || "Erro ao invalidar o convite" 
+        message: error.response?.data || "Erro ao invalidar o convite" 
       };
     }
   }
+
 };
