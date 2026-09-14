@@ -2,7 +2,7 @@ import React from 'react';
 import { useUI } from '../context/UIContext';
 
 export default function Topbar() {
-  const { setIsMobileMenuOpen } = useUI();
+  const { setIsMobileMenuOpen } = useUI(); // Acesso direto
   return (
     <header className="h-16 bg-pastoral-card-bg border-b border-pastoral-border px-6 flex items-center justify-between shadow-sm">
       <div className="flex items-center gap-4">

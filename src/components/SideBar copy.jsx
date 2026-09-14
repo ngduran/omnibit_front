@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // 1. Importamos os hooks de navegação
 import { useUI } from '../context/UIContext';
-import pastoralLogo from '../assets/pastoral-logo.webp';
 
 // ============================================================================
 // 1️⃣ SUB-COMPONENTE: LOGOTIPO E BOTÃO FECHAR (MOBILE)
@@ -11,7 +10,7 @@ function SidebarHeader({ setIsMobileMenuOpen }) {
     <div className="flex items-center justify-between mb-8 pb-4 border-b border-pastoral-primary-light">
       <div className="flex items-center gap-3">
         <img 
-          src={pastoralLogo} 
+          src="/pastoral-logo.webp" 
           alt="OmniBit Logo" 
           className="w-9 h-9 object-contain drop-shadow-sm"
         />

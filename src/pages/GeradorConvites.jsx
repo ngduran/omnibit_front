@@ -172,7 +172,7 @@ export default function GerenciarConvites() {
           </div>
 
           {/* Pessoa */}
-          <div className="md:col-span-4">
+          {/* <div className="md:col-span-4">
             <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
               Pessoa <span className="text-slate-400 font-normal">?</span>
             </label>
@@ -188,7 +188,7 @@ export default function GerenciarConvites() {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Cargo */}
           <div className="md:col-span-3">

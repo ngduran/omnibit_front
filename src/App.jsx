@@ -12,7 +12,7 @@ import CadastroConta from './pages/CadastroConta';
 import CadastroCargo from './pages/CadastroCargo';
 import CadastroUsuario from './pages/CadastroUsuario';
 import CadCadastroIntegrado from './pages/CadCadastroIntegrado';
-import GerenciarConvites from './pages/GerenciarConvites';
+// import GerenciarConvites from './pages/GerenciarConvites';
 import GeradorConvites from './pages/GeradorConvites';
 import CadastroPastoral from './pages/CadastroPastoral';
 
@@ -55,7 +55,7 @@ export default function App() {
             <Route path="/cad-cargos" element={<ProtectedRoute><CadastroCargo /></ProtectedRoute>} />
             <Route path="/cad-usuarios" element={<ProtectedRoute><CadastroUsuario /></ProtectedRoute>} />
             <Route path="/integrado" element={<ProtectedRoute><CadCadastroIntegrado /></ProtectedRoute>} />
-            <Route path="/convites" element={<ProtectedRoute><GerenciarConvites /></ProtectedRoute>} />
+            {/* <Route path="/convites" element={<ProtectedRoute><GerenciarConvites /></ProtectedRoute>} /> */}
             <Route path="/gera-convites" element={<ProtectedRoute><GeradorConvites /></ProtectedRoute>} />
             <Route path="/pastoral" element={<ProtectedRoute><CadastroPastoral /></ProtectedRoute>} />
             

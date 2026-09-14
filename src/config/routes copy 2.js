@@ -20,10 +20,8 @@ export const ROUTES = {
   DYNAMIC: {
     PASTORAL_DETALHES: (uuid) => `${BASE_PATH}/pastoral/${uuid}`,
   },
-  
-  // Gera o link externo dinâmico considerando a origem (Domain/IP:Port) e a subpasta (se houver)
-  BUILD_EXTERNAL_LINK: (codigoOuToken) => {
+  BUILD_EXTERNAL_LINK: (token) => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    return `${origin}${BASE_PATH}/cadastro-conta?tokenConvite=${codigoOuToken}`;
+    return `${origin}${BASE_PATH}/cadastro-conta?tokenConvite=${token}`;
   }
 };
