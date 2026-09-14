@@ -6,7 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { passwordSchema, emailSchema, usuarioSchema } from '../utils/validations'; 
+import { passwordSchema, emailSchema, usuarioSchema } from '../utils/validations';
+import pastoralLogo from '../assets/pastoral-logo.webp';
 
 const loginSchema = z.object({
   // Permite e-mail ou o alias definido no usuarioSchema
@@ -57,7 +58,8 @@ export default function Login() {
       <div className="max-w-md w-full bg-pastoral-card-bg rounded-3xl shadow-xl border border-pastoral-border border-t-0 border-l-0 border-r-0 overflow-hidden transition-all select-none">
         
         <div className="bg-pastoral-primary p-8 text-center text-pastoral-bg-soft flex flex-col items-center gap-2 select-none">
-          <img src="/pastoral-logo.webp" alt="OmniBit Logo" className="w-16 h-16 object-contain drop-shadow-md mb-1" />
+          {/* <img src="/pastoral-logo.webp" alt="OmniBit Logo" className="w-16 h-16 object-contain drop-shadow-md mb-1" /> */}
+          <img src={pastoralLogo} alt="OmniBit Logo" className="w-16 h-16 object-contain drop-shadow-md mb-1" />
           <h1 className="text-2xl font-black tracking-wider uppercase mt-1">OmniBit</h1>
         </div>
 
