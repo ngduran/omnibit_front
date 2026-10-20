@@ -3,7 +3,7 @@ const ID_NXD = typeof localStorage !== 'undefined' ? (localStorage.getItem('NGRO
 const ID_AUCT = typeof localStorage !== 'undefined' ? (localStorage.getItem('NGROK_ID_AUCT') || '') : '';
 
 // CHAVE DE CONTROLE: Alterne para 'false' para usar localhost
-const USE_NGROK = false; 
+const USE_NGROK = true; 
 
 const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
 
