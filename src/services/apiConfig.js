@@ -25,7 +25,6 @@
 // console.log("==============================================");
 
 
-
 // apiConfig.js refatorado com getters
 const USE_NGROK = true; 
 const NGROK_URL = (id) => `https://${id}.ngrok-free.app`;
