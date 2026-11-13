@@ -9,6 +9,11 @@ export default defineConfig({
   ],
   // base: "./",
   base: "/omnibit_front/",
+  
+  build: {
+    sourcemap: true,
+  },
+  
   test: {
     globals: true,
     environment: 'jsdom',
