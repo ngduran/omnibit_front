@@ -145,7 +145,7 @@ export default function Login() {
                 <input 
                   className="border rounded p-1 text-sm"
                   defaultValue={localStorage.getItem('NGROK_ID_NXD') || ''}
-                  onChange={(e) => localStorage.setItem('NGROK_ID_NXD', e.target.value)}
+                  onChange={(e) => localStorage.setItem('NGROK_ID_NXD', e.target.value.trim())}
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -153,7 +153,7 @@ export default function Login() {
                 <input 
                   className="border rounded p-1 text-sm"
                   defaultValue={localStorage.getItem('NGROK_ID_AUCT') || ''}
-                  onChange={(e) => localStorage.setItem('NGROK_ID_AUCT', e.target.value)}
+                  onChange={(e) => localStorage.setItem('NGROK_ID_AUCT', e.target.value.trim())}
                 />
               </div>
             </div>
