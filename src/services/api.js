@@ -4,8 +4,7 @@ import { ROUTES } from '../config/routes';
 
 // Instância para o Back-end principal (NXD)
 export const apiNxd = axios.create({
-  baseURL: ENV.NXD_API,
-  headers: { 
+  headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'ngrok-skip-browser-warning': 'true',
@@ -14,8 +13,7 @@ export const apiNxd = axios.create({
 
 // Instância para o Auctoritas
 export const apiAuctoritas = axios.create({
-  baseURL: ENV.AUCTORITAS_API,
-  headers: { 
+  headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'ngrok-skip-browser-warning': 'true',
@@ -23,61 +21,75 @@ export const apiAuctoritas = axios.create({
 });
 
 /**
- * Trata sessões expiradas/inválidas (HTTP 401), limpando o token, salvando a mensagem
- * retornada pelo backend no sessionStorage e redirecionando para a rota de login.
+ * Trata sessões expiradas/inválidas (HTTP 401),
+ * limpando o token, salvando a mensagem e redirecionando.
  */
 const tratarSessaoExpirada = (error) => {
   const urlRequisicao = error.config?.url || '';
-  const estaNaTelaDeLogin = typeof window !== 'undefined' && window.location.pathname.includes('/login');
-  const ehRotaDeAutenticacao = urlRequisicao.includes('/login') || urlRequisicao.includes('/auth');
+  const estaNaTelaDeLogin =
+    typeof window !== 'undefined' && window.location.pathname.includes('/login');
 
-  // ALTERAÇÃO: Sempre removemos o token expirado/inválido do localStorage imediatamente,
-  // garantindo que não permaneçam credenciais antigas salvas.
+  const ehRotaDeAutenticacao =
+    urlRequisicao.includes('/login') || urlRequisicao.includes('/auth');
+
   if (typeof localStorage !== 'undefined') {
     localStorage.removeItem('token');
   }
 
-  // ADICIONADO: Extrai a mensagem enviada pelo backend (ex: "Sua sessão expirou. Faça login novamente.")
-  const mensagemBackend = error.response?.data?.mensagem || 'Sua sessão expirou. Faça login novamente.';
+  const mensagemBackend =
+    error.response?.data?.mensagem || 'Sua sessão expirou. Faça login novamente.';
 
-  /* CÓDIGO ANTERIOR RETIRADO/REATORADO:
-   * O 'return' antecipado impedia o salvamento da mensagem e a limpeza do token quando a requisição falhava.
-   *
-   * if (ehRotaDeAutenticacao || estaNaTelaDeLogin) {
-   *   return;
-   * }
-   */
-
-  // ALTERAÇÃO: Se a requisição foi disparada pelo próprio formulário de login (POST /auth/login),
-  // interrompemos aqui para que o componente do formulário exiba a mensagem diretamente na tela.
   if (ehRotaDeAutenticacao) {
     return;
   }
 
-  // ADICIONADO: Armazena a mensagem temporariamente no sessionStorage para que a tela de Login
-  // possa lê-la e exibi-la ao usuário após o redirecionamento.
   if (typeof sessionStorage !== 'undefined') {
     sessionStorage.setItem('sessao_expirada_msg', mensagemBackend);
   }
 
-  // ALTERAÇÃO: Redireciona para o login apenas se o usuário ainda não estiver na tela de login.
   if (typeof window !== 'undefined' && !estaNaTelaDeLogin) {
     window.location.href = ROUTES.PUBLIC.LOGIN;
   }
 };
 
 // --- Interceptadores de Requisição ---
-const injetarTokenEHeaders = (config) => {
+
+/**
+ * Configura a URL dinamicamente em cada requisição.
+ * Assim, alterações nas chaves do localStorage
+ * são reconhecidas imediatamente pelo Axios.
+ */
+const configurarRequisicao = (getBaseURL) => (config) => {
+
+  // Busca novamente a URL atual
+  config.baseURL = getBaseURL();
+
+  // Header do Ngrok
   config.headers['ngrok-skip-browser-warning'] = 'true';
-  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+
+  // Busca o token atualizado
+  const token =
+    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
   }
+
   return config;
 };
 
-apiNxd.interceptors.request.use(injetarTokenEHeaders, (error) => Promise.reject(error));
-apiAuctoritas.interceptors.request.use(injetarTokenEHeaders, (error) => Promise.reject(error));
+// Cada instância consulta sua própria URL atual
+apiNxd.interceptors.request.use(
+  configurarRequisicao(() => ENV.NXD_API),
+  (error) => Promise.reject(error)
+);
+
+apiAuctoritas.interceptors.request.use(
+  configurarRequisicao(() => ENV.AUCTORITAS_API),
+  (error) => Promise.reject(error)
+);
 
 // --- Interceptadores de Resposta ---
 apiNxd.interceptors.response.use(
@@ -86,6 +98,7 @@ apiNxd.interceptors.response.use(
     if (error.response?.status === 401) {
       tratarSessaoExpirada(error);
     }
+
     return Promise.reject(error);
   }
 );
@@ -93,9 +106,10 @@ apiNxd.interceptors.response.use(
 apiAuctoritas.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    if ( error.response?.status === 401 || error.response?.status === 403 ) {
       tratarSessaoExpirada(error);
     }
+
     return Promise.reject(error);
   }
 );
