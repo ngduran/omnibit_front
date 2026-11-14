@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecionando...</title>
+  <script>
+    const path = window.location.pathname;
+    const search = window.location.search;
+
+    const base = '/omnibit_front';
+
+    const redirect = base + '/?redirect=' + encodeURIComponent(path + search);
+
+    window.location.replace(redirect);
+  </script>
+</head>
+<body>
+  Redirecionando...
+</body>
+</html>
