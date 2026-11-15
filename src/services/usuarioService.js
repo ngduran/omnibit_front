@@ -18,6 +18,25 @@ export const usuarioService = {
   },
 
   /**
+   * Registra o vínculo provisório do convite no Omnibit
+   * @param {Object} dados - tokenConvite, cargoUuid e pastoralUuid
+   */
+  async salvarConvite(dados) {
+    try {
+      const response = await apiNxd.post('/usuarios-perfis/convite', dados);
+
+      return { success: true, data: response.data };
+    } catch (error) {
+      const mensagemErro =
+        error.response?.data?.mensagem ||
+        error.response?.data ||
+        'Erro ao salvar o vínculo do convite';
+
+      return { success: false, message: mensagemErro };
+    }
+  },
+
+  /**
    * Lista todos os perfis de usuários cadastrados
    * @returns {Promise<Object>} Lista de perfis ou erro tratado
    */

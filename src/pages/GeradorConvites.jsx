@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { cargoService } from '../services/cargoService';
 import { conviteService } from '../services/conviteService';
-import { usuarioService } from '../services/usuarioService';
 import { pastoralService } from '../services/pastoralService'; 
-import { authService } from '../services/authService'; 
 import { toast } from 'sonner';
+import { usuarioService } from '../services/usuarioService';
 
 // ADICIONADO: Importação do centralizador de rotas
 import { ROUTES } from '../config/routes';
 
 export default function GerenciarConvites() {
   const [cargos, setCargos] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
   const [pastorais, setPastorais] = useState([]); 
   const [convites, setConvites] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Estados do formulário
-  const [pessoaInput, setPessoaInput] = useState('');
+  // Estados do formulário 
   const [pastoralInput, setPastoralInput] = useState('');
   const [cargoUuidInput, setCargoUuidInput] = useState('');
 
@@ -28,16 +25,14 @@ export default function GerenciarConvites() {
   const carregarDados = async () => {
     setLoading(true);
     try {
-      const [resCargos, resConvites, resUsuarios, resPastorais] = await Promise.all([
+      const [resCargos, resConvites, resPastorais] = await Promise.all([
         cargoService.listar(),
         conviteService.listar(),       
-        authService.listarUsuarios(),
         pastoralService?.listar ? pastoralService.listar() : Promise.resolve({ success: true, data: [] }) 
       ]);
 
       if (resCargos.success) setCargos(resCargos.data);
-      if (resConvites.success) setConvites(resConvites.data);
-      if (resUsuarios.success) setUsuarios(resUsuarios.data);
+      if (resConvites.success) setConvites(resConvites.data);      
       if (resPastorais.success) setPastorais(resPastorais.data);
     } catch (error) {
       toast.error('Erro ao carregar dados da tela.');
@@ -68,28 +63,51 @@ export default function GerenciarConvites() {
 
   const handleGerarConvite = async (e) => {
     e.preventDefault();
+
     if (!cargoUuidInput || !pastoralInput) {
       toast.warning('Selecione uma pastoral e um cargo.');
       return;
     }
 
-    const payload = {
-      pessoaUuid: pessoaInput || null,
-      pastoralUuid: pastoralInput,
-      cargoUuid: cargoUuidInput,
-    };
+    // 1. Solicita a geração do token ao Auctoritas
+    const resultadoConvite = await conviteService.gerar();
 
-    const resultado = await conviteService.gerar(payload);
-
-    if (resultado.success) {
-      toast.success('Link gerado com sucesso!');
-      setPessoaInput('');
-      setPastoralInput('');
-      setCargoUuidInput('');
-      carregarDados();
-    } else {
-      toast.error('Erro ao gerar convite', { description: resultado.message });
+    if (!resultadoConvite.success) {
+      toast.error('Erro ao gerar convite no Auctoritas', {
+        description: resultadoConvite.message
+      });
+      return;
     }
+
+    // O Auctoritas retorna a entidade Convite com a propriedade "token"
+    const tokenConvite = resultadoConvite.data?.token;
+
+    if (!tokenConvite) {
+      toast.error('O Auctoritas não retornou o token do convite.');
+      return;
+    }
+
+    // 2. Registra a associação no banco do Omnibit
+    const resultadoVinculo = await usuarioService.salvarConvite({
+      tokenConvite,
+      cargoUuid: cargoUuidInput,
+      pastoralUuid: pastoralInput
+    });
+
+    if (!resultadoVinculo.success) {
+      toast.error('Convite gerado, mas houve falha ao registrar o vínculo no Omnibit.', {
+        description: resultadoVinculo.message
+      });
+      return;
+    }
+
+    // 3. Finaliza a operação
+    toast.success('Convite gerado com sucesso!');
+
+    setPastoralInput('');
+    setCargoUuidInput('');
+
+    await carregarDados();
   };
 
   const copiarLink = (tokenOuCodigo) => {
@@ -170,26 +188,7 @@ export default function GerenciarConvites() {
               ))}
             </select>
           </div>
-
-          {/* Pessoa */}
-          {/* <div className="md:col-span-4">
-            <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
-              Pessoa <span className="text-slate-400 font-normal">?</span>
-            </label>
-            <select
-              value={pessoaInput}
-              onChange={(e) => setPessoaInput(e.target.value)}
-              className="w-full p-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6b2142] cursor-pointer text-slate-700"              
-            >
-              <option value="" disabled>Selecione a pessoa</option>
-              {usuarios.map((u) => (
-                <option key={u.id || u.uuid} value={u.id || u.uuid}>
-                  {u.nome}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
+         
           {/* Cargo */}
           <div className="md:col-span-3">
             <label className="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center gap-1 tracking-wide">
@@ -269,10 +268,14 @@ export default function GerenciarConvites() {
                       <td className="p-4">
                         <div className="flex flex-col">
                           <span className={`font-bold ${isAtivo ? 'text-slate-700' : 'text-slate-400'}`}>
-                            {convite.pastoral?.nome || 'Pastoral não informada'}
+                           
+                            {/* {convite.pastoral?.nome || 'Pastoral não informada'} */}
+                          
                           </span>
                           <span className="text-xs text-slate-500">
-                            {convite.cargo?.nome || 'Cargo'}
+                          
+                            {/* {convite.cargo?.nome || 'Cargo'} */}
+                          
                           </span>
                         </div>
                       </td>

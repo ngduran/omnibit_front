@@ -2,13 +2,12 @@ import { apiAuctoritas } from './api';
 
 export const conviteService = {
   /**
-   * Gera um novo convite no back-end
-   * @param {Object} payload - Dados do convite (pessoaUuid, pastoralUuid, cargoUuid)
+   * Gera um novo convite no back-end   * 
    * @returns {Promise<Object>} Resposta da API ou erro tratado
    */
-  async gerar(payload) {
+  async gerar() {
     try {
-      const response = await apiAuctoritas.post('/convites/gerar', payload);
+      const response = await apiAuctoritas.post('/convites/gerar');
       return { success: true, data: response.data };
     } catch (error) {
       const mensagemErro = error.response?.data?.mensagem || error.response?.data || 'Erro ao gerar o convite';
